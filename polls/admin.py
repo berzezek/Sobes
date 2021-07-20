@@ -2,33 +2,21 @@ from django.contrib import admin
 from .models import *
 
 
-class AnswerChoiceTypeInLine(admin.TabularInline):
-    model = AnswerChoiceType
+class AnswerChoiceInLine(admin.TabularInline):
+    model = AnswerChoice
     # raw_id_fields = ('answer_choices',)
-    # fieldsets = ['answer_choice',]
+    # fields = ('question_choices',)
+    # extra = 3
 
 
-class AnswerChoiceAdmin(admin.ModelAdmin):
+class QuestionAdmin(admin.ModelAdmin):
     inlines = [
-        AnswerChoiceTypeInLine,
+        AnswerChoiceInLine,
     ]
-
-
-class AnswerMultiTypeInLine(admin.TabularInline):
-    model = AnswerMultiType
-    # raw_id_fields = ('answer_choices',)
-
-
-class AnswerMultiAdmin(admin.ModelAdmin):
-    inlines = [
-        AnswerMultiTypeInLine,
-    ]
+    # exclude = ('question_choices', 'poll')
 
 
 admin.site.register(Poll)
-admin.site.register(Question)
-admin.site.register(Answer)
-admin.site.register(AnswerChoiceType)
-admin.site.register(AnswerChoices, AnswerChoiceAdmin)
-admin.site.register(AnswerMulties, AnswerMultiAdmin)
+admin.site.register(Question, QuestionAdmin)
+admin.site.register(AnswerChoice)
 admin.site.register(UserAnswer)
