@@ -15,12 +15,21 @@ class QuestionRUDView(RetrieveUpdateDestroyAPIView):
     queryset = Question.objects.all()
 
 
+class UserAnswerRUDView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UserAnswerSerializers
+    queryset = UserAnswer.objects.all()
+
+
 class PollCreateView(CreateAPIView):
-    serializer_class = QuestionSerializers
+    serializer_class = PollSerializers
 
 
 class QuestionCreateView(CreateAPIView):
     serializer_class = QuestionSerializers
+
+
+class UserAnswerCreateView(CreateAPIView):
+    serializer_class = UserAnswerSerializers
 
 
 class PollListView(ListAPIView):
@@ -33,13 +42,14 @@ class QuestionListView(ListAPIView):
     serializer_class = QuestionSerializers
 
 
+class UserAnswerListView(ListAPIView):
+    queryset = UserAnswer.objects.all()
+    serializer_class = UserAnswerSerializers
+
+
 class PollViewSet(ModelViewSet):
     queryset = Poll.objects.all()
     serializer_class = PollSerializers
-
-
-class UserAnswerCreateView(CreateAPIView):
-    serializer_class = UserAnswerSerializers
 
 
 def all_polls(request):

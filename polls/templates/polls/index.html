@@ -12,11 +12,13 @@
 </head>
 <body>
 {% verbatim %}
-    <div class="container mt-5" id="polls">
+    <div class="container w-50 mt-5" id="polls">
+        <h1 class="text-center mb-5">Опросы</h1>
         <div class="alert alert-info" v-for="el in polls">
-            <h1>{{ num++ }}: {{ el.title_poll }}</h1>
+            <h1>{{ el.id }}: {{ el.title_poll }}</h1>
         </div>
     </div>
+    <div id="pollsall"></div>
 {% endverbatim %}
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>

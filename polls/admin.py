@@ -13,7 +13,7 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [
         AnswerChoiceInLine,
     ]
-    # exclude = ('question_choices', 'poll')
+    exclude = ('question_choices', )
 
 
 admin.site.register(Poll)

@@ -2,7 +2,7 @@ new Vue({
     el: '#polls',
     data: {
         polls: [],
-        num: 1,
+        num: 0,
 
     },
     created: function() {
