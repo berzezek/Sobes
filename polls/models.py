@@ -12,7 +12,7 @@ class Poll(models.Model):
         verbose_name_plural = 'Опросы'
         ordering = ['-start_date_poll']
 
-    owner_poll = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='+')
+    owner_poll = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner_polls')
     title_poll = models.CharField('Наименование опроса', max_length=255)
     description_poll = models.CharField('Описание опроса', max_length=255)
     start_date_poll = models.DateField('Дата начала опроса', blank=True, null=True)
@@ -26,7 +26,7 @@ class AnswerChoice(models.Model):
 
     """Промежуточная модель для формирования вариантов ответов"""
     answer_title = models.CharField('Варианты ответа', max_length=255, blank=True, null=True)
-    answer = models.ForeignKey('Question', on_delete=models.CASCADE, blank=True, null=True)
+    answer = models.ForeignKey('Question', on_delete=models.CASCADE, blank=True, null=True, related_name='answers')
 
     def __str__(self):
         return "{}: {}".format(self.answer, self.answer_title)
@@ -45,10 +45,10 @@ class Question(models.Model):
     )
 
     poll_question = models.ForeignKey(Poll, verbose_name='Наименование опроса',
-                                      on_delete=models.CASCADE, blank=True, null=True)
+                                      on_delete=models.CASCADE, blank=True, null=True, related_name='question_poll')
     title_question = models.CharField('Вопрос', max_length=255)
     type_question = models.CharField('Тип ответа', max_length=1, choices=TYPE_QUESTION, default='1')
-    answer_question = models.CharField(max_length=255, blank=True, null=True)
+    # answer_question = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.title_question

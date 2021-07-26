@@ -1,22 +1,26 @@
-from django.urls import path, include
-from rest_framework.authtoken.views import obtain_auth_token
-from rest_framework.routers import SimpleRouter
-from .views import PollViewSet, QuestionViewSet, all_polls, create_poll, QuestionView
+from django.urls import path
+from rest_framework.urlpatterns import format_suffix_patterns
+from .views import *
 
-router = SimpleRouter()
-router.register('api/poll', PollViewSet)
-router.register('api/question', QuestionViewSet)
 
 urlpatterns = [
-    path('', all_polls),
-    path('qu-all/', QuestionView.as_view()),
+    path('polls/', PollList.as_view()),
+    path('polls/<int:pk>/', PollDetail.as_view()),
 
-    path('create-poll/', create_poll),
+    path('question/', QuestionList.as_view()),
+    path('question/<int:pk>/', QuestionList.as_view()),
 
-    path('auth', include('djoser.urls')),
-    path('auth/token', obtain_auth_token, name='token')
+    path('users/', UserList.as_view()),
+    path('users/<int:pk>/', UserDetail.as_view()),
 
-    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('answerchoice/', AnswerChoiceList.as_view()),
+    path('answerchoice/<int:pk>/', AnswerChoiceDetail.as_view()),
+
+    path('user-answer/', UserAnswerList.as_view()),
+    path('user-answer/<int:pk>/', UserAnswerDetail.as_view()),
+
+    # path('', all_polls),
+
 ]
 
-urlpatterns += router.urls
+urlpatterns = format_suffix_patterns(urlpatterns)

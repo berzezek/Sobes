@@ -1,42 +1,49 @@
-from .models import Poll, Question, UserAnswer
+from .models import Poll, Question, UserAnswer, AnswerChoice
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
 
+    owner_polls = serializers.PrimaryKeyRelatedField(many=True, queryset=Poll.objects.all())
+
     class Meta:
         model = User
-        fields = ['username', 'password']
-
-
-class PollSerializer(serializers.ModelSerializer):
-
-    owner_poll = UserSerializer()
-
-    class Meta:
-        model = Poll
-        fields = '__all__'
+        fields = ['id', 'username', 'owner_polls']
 
 
 class QuestionSerializer(serializers.ModelSerializer):
 
-    poll_question = PollSerializer()
-    type_question = serializers.CharField(source='get_type_question_display')
-
     class Meta:
         model = Question
-        fields = '__all__'
+        fields = ['id', 'title_question', 'type_question', 'poll_question', 'answers']
+
+
+class PollSerializer(serializers.ModelSerializer):
+
+    owner_poll = serializers.ReadOnlyField(source='owner_poll.username')
+    question_poll = QuestionSerializer(many=True)
+
+    class Meta:
+        model = Poll
+        # fields = '__all__'
+        fields = ('owner_poll', 'title_poll', 'description_poll', 'start_date_poll', 'end_date_poll', 'question_poll')
+        ordering = ('title_poll',)
+
+
+class AnswerChoiceSerializer(serializers.ModelSerializer):
+
+    answers = QuestionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = AnswerChoice
+        fields = ('answer_title', 'answer', 'answers')
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
 
-    user_name = UserSerializer()
-    user_poll = PollSerializer()
-    user_question = QuestionSerializer()
-    user_answer_choice = QuestionSerializer()
-    user_answer_multi = QuestionSerializer()
+    type_question = QuestionSerializer(read_only=True)
 
     class Meta:
         model = UserAnswer
-        fields = '__all__'
+        fields = ('type_question',)
