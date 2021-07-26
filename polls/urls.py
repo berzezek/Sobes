@@ -1,25 +1,22 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.routers import SimpleRouter
-from .views import *
+from .views import PollViewSet, QuestionViewSet, all_polls, create_poll, QuestionView
 
 router = SimpleRouter()
-router.register('api/v1/poll', PollViewSet)
-
+router.register('api/poll', PollViewSet)
+router.register('api/question', QuestionViewSet)
 
 urlpatterns = [
     path('', all_polls),
+    path('qu-all/', QuestionView.as_view()),
 
-    path('poll/all/', PollListView.as_view()),
-    path('question/all/', QuestionListView.as_view()),
-    path('question/all/', UserAnswerListView.as_view()),
+    path('create-poll/', create_poll),
 
-    path('poll/create/', PollCreateView.as_view()),
-    path('question/create/', QuestionCreateView.as_view()),
-    path('useranswer/create/', UserAnswerCreateView.as_view()),
+    path('auth', include('djoser.urls')),
+    path('auth/token', obtain_auth_token, name='token')
 
-    path('poll/detail/<int:pk>', PollRUDView.as_view()),
-    path('question/detail/<int:pk>', PollRUDView.as_view()),
-    path('useranswer/detail/<int:pk>', UserAnswerRUDView.as_view()),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 
 urlpatterns += router.urls

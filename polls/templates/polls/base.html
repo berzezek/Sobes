@@ -1,0 +1,52 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Главная</title>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+</head>
+  <body>
+    <header>
+      <div class="collapse bg-dark" id="navbarHeader">
+      <h3 class="text-secondary text-center mb-2">Войдите для добавления опроса</h3>
+        <div class="container col-3">
+            <form id="reg" action="">
+                <div class="form-floating">
+                  <input type="login" class="form-control" id="floatingInput" placeholder="Логин" v-model="checkedNames">
+                  <label for="floatingInput">Логин</label>
+                </div>
+                <div class="form-floating">
+                  <input type="password" class="form-control" id="floatingPassword" placeholder="Пароль" v-model="checkedPassword">
+                  <label for="floatingPassword">Пароль</label>
+                </div>
+                <button class="w-100 btn btn-lg btn-primary" type="submit">Войти</button>
+              </form>
+        </div>
+      </div>
+      <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    {% block content %}
+    {% endblock %}
+    <footer class="footer mt-auto py-3 bg-light fixed-bottom">
+      <div class="container">
+        <span class="text-muted">Опросник</span>
+      </div>
+    </footer>
+<!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script src="{% static 'polls/js/main.js' %}"></script>
+  </body>
+</html>
