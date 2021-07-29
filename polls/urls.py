@@ -1,26 +1,17 @@
 from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
+from rest_framework.routers import SimpleRouter
+
 from .views import *
 
+router = SimpleRouter()
+router.register('polls/', PollModelViewSet, basename='polls')
+router.register('question/', QuestionModelViewSet, basename='question')
+router.register('answer-choice/', AnswerChoiceModelViewSet, basename='answer-choice')
+router.register('user-answer/', UserAnswerModelViewSet, basename='user-answer')
 
 urlpatterns = [
-    path('polls/', PollList.as_view()),
-    path('polls/<int:pk>/', PollDetail.as_view()),
+    path('', all_polls),
+    path('question/', all_question),
+    ]
 
-    path('question/', QuestionList.as_view()),
-    path('question/<int:pk>/', QuestionList.as_view()),
-
-    path('users/', UserList.as_view()),
-    path('users/<int:pk>/', UserDetail.as_view()),
-
-    path('answerchoice/', AnswerChoiceList.as_view()),
-    path('answerchoice/<int:pk>/', AnswerChoiceDetail.as_view()),
-
-    path('user-answer/', UserAnswerList.as_view()),
-    path('user-answer/<int:pk>/', UserAnswerDetail.as_view()),
-
-    # path('', all_polls),
-
-]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
+urlpatterns += router.urls

@@ -1,8 +1,9 @@
+import random
 from django.db import models
 from django.contrib.auth.models import User
-from pygments.lexers import get_lexer_by_name
-from pygments.formatters.html import HtmlFormatter
-from pygments import highlight
+# from pygments.lexers import get_lexer_by_name
+# from pygments.formatters.html import HtmlFormatter
+# from pygments import highlight
 
 
 class Poll(models.Model):
@@ -48,10 +49,9 @@ class Question(models.Model):
                                       on_delete=models.CASCADE, blank=True, null=True, related_name='question_poll')
     title_question = models.CharField('Вопрос', max_length=255)
     type_question = models.CharField('Тип ответа', max_length=1, choices=TYPE_QUESTION, default='1')
-    # answer_question = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return self.title_question
+        return '{}. Тип ответа: {}'.format(self.title_question, self.get_type_question_display())
 
 
 class UserAnswer(models.Model):
@@ -60,7 +60,7 @@ class UserAnswer(models.Model):
         verbose_name = 'Ответы пользователя'
         verbose_name_plural = 'Ответы пользователей'
 
-    user_name = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     user_poll = models.ForeignKey(Poll, on_delete=models.DO_NOTHING)
     user_question = models.ForeignKey(Question, on_delete=models.DO_NOTHING)
     user_answer_text = models.TextField('Ответ Текстом', blank=True, null=True)

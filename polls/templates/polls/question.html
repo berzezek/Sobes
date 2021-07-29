@@ -1,0 +1,17 @@
+{% extends 'polls/base.html' %}
+{% load static %}
+    {% block content %}
+        {% verbatim %}
+            <div class="container mt-3" id="question">
+                <h4 class="text-center">Опросы</h4>
+                <div class="d-flex text-muted pt-3" v-for="el in question">
+                    <div class="pb-3 mb-0 small lh-sm border-bottom w-100 shadow p-3 rounded">
+                        <div class="d-flex justify-content-between">
+                            <strong class="text-gray-dark my-3">№: {{ el.id }} - {{ el.title_question }}</strong>
+                        </div>
+                        <p class="d-block">{{ el.type_question }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endverbatim %}
+    {% endblock %}

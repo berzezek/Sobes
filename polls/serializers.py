@@ -12,38 +12,46 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'owner_polls']
 
 
+class AnswerChoiceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AnswerChoice
+        fields = ('answer_title',)
+
+
 class QuestionSerializer(serializers.ModelSerializer):
+
+    type_question = serializers.CharField(source='get_type_question_display')
+    answers = AnswerChoiceSerializer(many=True)
 
     class Meta:
         model = Question
-        fields = ['id', 'title_question', 'type_question', 'poll_question', 'answers']
+        fields = ['id', 'title_question', 'type_question', 'answers']
 
 
 class PollSerializer(serializers.ModelSerializer):
 
-    owner_poll = serializers.ReadOnlyField(source='owner_poll.username')
-    question_poll = QuestionSerializer(many=True)
+    # owner_poll = serializers.ReadOnlyField(source='owner_poll.username')
+    # question_poll = QuestionSerializer(many=True)
+    # start_date_poll = serializers.DateField()
 
     class Meta:
         model = Poll
         # fields = '__all__'
-        fields = ('owner_poll', 'title_poll', 'description_poll', 'start_date_poll', 'end_date_poll', 'question_poll')
+        fields = ('owner_poll', 'title_poll', 'description_poll', 'start_date_poll', 'end_date_poll')
         ordering = ('title_poll',)
-
-
-class AnswerChoiceSerializer(serializers.ModelSerializer):
-
-    answers = QuestionSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = AnswerChoice
-        fields = ('answer_title', 'answer', 'answers')
 
 
 class UserAnswerSerializer(serializers.ModelSerializer):
 
-    type_question = QuestionSerializer(read_only=True)
+    user_name = serializers.ReadOnlyField(source='user_name.username')
+    # user_poll = PollSerializer()
+    # user_question = QuestionSerializer()
+    # user_answer_choice = serializers.CharField()
+    # user_answer_multi = AnswerChoiceSerializer(many=True, required=False)
 
     class Meta:
         model = UserAnswer
-        fields = ('type_question',)
+
+        fields = ('id', 'user_name', 'user_poll', 'user_question', 'user_answer_text', 'user_answer_choice',
+                  'user_answer_multi')

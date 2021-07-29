@@ -4,14 +4,12 @@ from .models import *
 
 class AnswerChoiceInLine(admin.TabularInline):
     model = AnswerChoice
-    # fields = ('answer_question',)
 
 
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [
         AnswerChoiceInLine,
     ]
-    exclude = ('answer_question',)
 
 
 admin.site.register(Poll)

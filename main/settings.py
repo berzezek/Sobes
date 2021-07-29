@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     # 'rest_framework_simplejwt',
     'rest_framework.authtoken',
 
+    'djoser'
+
     # 'corsheaders',
 ]
 
@@ -126,6 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_REDIRECT_URL = 'polls'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
