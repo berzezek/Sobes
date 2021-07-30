@@ -60,7 +60,6 @@ class UserAnswer(models.Model):
         verbose_name = 'Ответы пользователя'
         verbose_name_plural = 'Ответы пользователей'
 
-    user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     user_poll = models.ForeignKey(Poll, on_delete=models.DO_NOTHING)
     user_question = models.ForeignKey(Question, on_delete=models.DO_NOTHING)
     user_answer_text = models.TextField('Ответ Текстом', blank=True, null=True)
@@ -68,4 +67,4 @@ class UserAnswer(models.Model):
     user_answer_multi = models.ManyToManyField(AnswerChoice, blank=True, related_name='+')
 
     def __str__(self):
-        return 'Пользователь: {}, Опрос: {} - {}'.format(self.user_name, self.user_poll, self.user_question)
+        return 'Пользователь: {}, Опрос: {} - {}'.format(self.user_id, self.user_poll, self.user_question)
