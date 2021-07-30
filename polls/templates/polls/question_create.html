@@ -1,0 +1,31 @@
+{% extends 'polls/base.html' %}
+{% load static %}
+    {% block content %}
+        {% verbatim %}
+            <div class="container" id="poll_create">
+                <form>
+
+                <h3 class="text-center">Создание вопроса</h3>
+
+                  <div class="my-3">
+                    <label for="poll_question" class="form-label">Название опроса</label>
+                    <input type="text" class="form-control" id="poll_question">
+                  </div>
+
+                  <div class="my-3">
+                    <label for="title_question" class="form-label">Название вопроса</label>
+                    <input type="text" class="form-control" id="title_question">
+                  </div>
+
+                  <div class="my-3">
+                    <label for="type_question" class="form-label">Тип ответа</label>
+                    <input type="text" class="form-control" id="type_question">
+                  </div>
+
+                    <button type="button" class="btn btn-secondary me-3 mt-3">Следующий</button>
+
+                    <button type="button" class="btn btn-secondary">Вернуться к публикации</button>
+                </form>
+            </div>
+        {% endverbatim %}
+    {% endblock %}

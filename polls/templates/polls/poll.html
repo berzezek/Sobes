@@ -7,10 +7,10 @@
                 <div class="d-flex text-muted pt-3" v-for="el in poll">
                     <div class="pb-3 mb-0 small lh-sm border-bottom w-100 shadow p-3 rounded">
                         <div class="d-flex justify-content-between">
-
-                                <strong class="text-gray-dark my-3">№: {{ el.id }} - {{ el.title_poll }}</strong>
-
-                        <a href="question" class="d-flex align-items-center">Пройти опрос</a>
+                            <strong class="text-gray-dark my-3">№ {{ el.id }} {{ el.title_poll }}</strong>
+                            {% endverbatim %}
+                        <a href="/api/user_answer/" class="d-flex align-items-center">Пройти опрос</a>
+                            {% verbatim %}
                         </div>
                         <p class="d-block">{{ el.description_poll }}</p>
                     </div>

@@ -1,57 +1,41 @@
-from .models import Poll, Question, UserAnswer, AnswerChoice
-from rest_framework import serializers
+from .models import *
 from django.contrib.auth.models import User
+from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
 
 
-class UserSerializer(serializers.ModelSerializer):
-
-    owner_polls = serializers.PrimaryKeyRelatedField(many=True, queryset=Poll.objects.all())
+class UserSerializer(ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'owner_polls']
+        fields = ['username', 'password']
 
 
-class AnswerChoiceSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = AnswerChoice
-        fields = ('answer_title',)
-
-
-class QuestionSerializer(serializers.ModelSerializer):
-
-    type_question = serializers.CharField(source='get_type_question_display')
-    answers = AnswerChoiceSerializer(many=True)
-
-    class Meta:
-        model = Question
-        fields = ['id', 'title_question', 'type_question', 'answers']
-
-
-class PollSerializer(serializers.ModelSerializer):
-
-    # owner_poll = serializers.ReadOnlyField(source='owner_poll.username')
-    # question_poll = QuestionSerializer(many=True)
-    # start_date_poll = serializers.DateField()
+class PollSerializer(ModelSerializer):
 
     class Meta:
         model = Poll
-        # fields = '__all__'
-        fields = ('owner_poll', 'title_poll', 'description_poll', 'start_date_poll', 'end_date_poll')
-        ordering = ('title_poll',)
+        fields = '__all__'
 
 
-class UserAnswerSerializer(serializers.ModelSerializer):
+class QuestionSerializer(ModelSerializer):
 
-    user_name = serializers.ReadOnlyField(source='user_name.username')
-    # user_poll = PollSerializer()
-    # user_question = QuestionSerializer()
-    # user_answer_choice = serializers.CharField()
-    # user_answer_multi = AnswerChoiceSerializer(many=True, required=False)
+    class Meta:
+        model = Question
+        fields = '__all__'
+
+
+class AnswerChoiceSerializer(ModelSerializer):
+
+    question = PrimaryKeyRelatedField(many=True, queryset=Question.objects.all())
+
+    class Meta:
+        model = AnswerChoice
+        fields = ('answer_title', 'question')
+
+
+class UserAnswerSerializer(ModelSerializer):
 
     class Meta:
         model = UserAnswer
+        fields = '__all__'
 
-        fields = ('id', 'user_name', 'user_poll', 'user_question', 'user_answer_text', 'user_answer_choice',
-                  'user_answer_multi')

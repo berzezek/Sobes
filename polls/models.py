@@ -51,7 +51,7 @@ class Question(models.Model):
     type_question = models.CharField('Тип ответа', max_length=1, choices=TYPE_QUESTION, default='1')
 
     def __str__(self):
-        return '{}. Тип ответа: {}'.format(self.title_question, self.get_type_question_display())
+        return '{} / {}. {}'.format(self.poll_question, self.title_question, self.get_type_question_display())
 
 
 class UserAnswer(models.Model):
