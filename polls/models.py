@@ -67,4 +67,4 @@ class UserAnswer(models.Model):
     user_answer_multi = models.ManyToManyField(AnswerChoice, blank=True, related_name='+')
 
     def __str__(self):
-        return 'Пользователь: {}, Опрос: {} - {}'.format(self.user_id, self.user_poll, self.user_question)
+        return 'Опрос: {} - {}'.format(self.user_poll, self.user_question)
