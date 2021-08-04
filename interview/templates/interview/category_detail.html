@@ -1,0 +1,18 @@
+{% extends 'interview/base.html' %}
+
+{% block content %}
+
+{% load rest_framework %}
+
+<div class="container">
+
+    <h4 class="text-center">Номер опроса - {{ category.pk }}</h4>
+
+    <form action="{% url 'category_detail' pk=category.pk %}" method="POST">
+        {% csrf_token %}
+        {% render_form serializer %}
+        <input type="submit" value="Сохранить">
+    </form>
+</div>
+
+{% endblock %}

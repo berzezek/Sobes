@@ -9,7 +9,7 @@ new Vue({
             app.poll = response.data;
         })
     }
-})
+});
 
 new Vue({
     el: '#user_answer',
@@ -22,18 +22,4 @@ new Vue({
             app.user_answer = response.data;
         })
     }
-})
-
-
-new Vue({
-    el: '#question',
-    data: {
-        question: [],
-    },
-    created: function() {
-        const app = this;
-        axios.get('/api/question/').then(function(response) {
-            app.question = response.data;
-        })
-    }
-})
+});
