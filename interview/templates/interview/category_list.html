@@ -1,22 +1,34 @@
 {% extends 'interview/base.html' %}
-{% load rest_framework %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="container">
+
+<div class="container mt-5">
     <h3 class="text-center">Опросы</h3>
-    <p class="text-end mb-5">Количество доступных опросов - {{ count }}</p>
+    <p class="text-end mb-5 me-5">Количество доступных опросов - {{ count }}</p>
     <ul>
-        {% for el in category %}
-        <li>
-            <div class="shadow p-3 rounded d-flex justify-content-between">
-                <h4>{{ el.title }}</h4>
-                {% if user.is_authenticated %}
-                <a href="{% url 'category_detail' el.pk %}">Изменить</a>
-                {% endif %}
+        {% for el in categories %}
+        <li class="my-5">
+            <div class="shadow p-3 rounded">
+                <div class="container">
+                    <h4>{{ el.title }}</h4>
+                    <p class="ms-2 text-muted">{{ el.description }}</p>
+                    <p class="text-end"> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
+                    {% if user.is_authenticated %}
+                    <a href="{{ el.get_absolute_url }}">Подробнее</a>
+                    {% endif %}
+                </div>
             </div>
         </li>
         {% endfor %}
     </ul>
+    {% if user.is_authenticated %}
+    <a href="{% url 'create' %}" class="btn btn-secondary shadow">Создать опрос</a>
+    {% endif %}
 </div>
-
+<br>
+<br>
+<br>
 {% endblock %}

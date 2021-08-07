@@ -1,18 +1,53 @@
 {% extends 'interview/base.html' %}
 
 {% block content %}
+<div class="container mt-5">
 
-{% load rest_framework %}
+    <h4 class="text-center mb-3">Опрос: {{ category.title }}</h4>
+    <hr>
+    <h5 class="my-3">Вопрос: {{ title }}</h5>
+    {% for el in questions %}
+    {% if el.type == '1' %}
+    <p>Тип ответа: текстом</p>
+    {% elif el.type == '2' %}
+    <p>Тип ответа: выбор</p>
+    {% elif el.type == '3' %}
+    <p>Тип ответа: опция</p>
+    {% endif %}
 
-<div class="container">
+    <div class="d-flex mt-5">
 
-    <h3 class="text-center">Вопрос №{{ question.pk }}</h3>
 
-    <form action="{% url 'question_detail' pk=question.pk %}" method="POST">
-        {% csrf_token %}
-        {% render_form serializer %}
-        <input type="submit" value="Save">
-    </form>
+        {% if el.type == '1' %}
+        <p>Ответ текстом</p>
+        {% else %}
+        <p class="ms-3 text-muted">Варианты ответов:</p>
+        {% endif %}
+
+        {% if el.type != '1' %}
+
+        <div>
+
+            {% for c in choice %}
+            <ul class="ms-5">
+                <li>
+                    <p>{{ c }}</p>
+                </li>
+            </ul>
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+        <p>Ответ текстом</p>
+        {% endif %}
+    {% endfor %}
+    </div>
+    <hr>
+    <div class="d-flex mt-5">
+        <a href="{% url 'category_detail' slug=category.slug %}" class="btn btn-secondary mx-5">Венуться к опросу</a>
+        <a href="{# url 'question_delete' slug=category.slug q_slug=question.slug #}" class="btn btn-secondary">Удалить
+            вопрос</a>
+    </div>
 </div>
-
 {% endblock %}

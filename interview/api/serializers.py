@@ -1,13 +1,22 @@
 from rest_framework import serializers
-from .models import Category, Question, Choice, Answer
+from main.interview.models import Category, Question, Choice, Answer
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='interview-api:category_detail',
+    )
+    delete_url = serializers.HyperlinkedIdentityField(
+        view_name='interview-api:category_delete',
+    )
+    post_detail_url = serializers.HyperlinkedIdentityField(
+        view_name='interview-api:category_delete',
+    )
 
     class Meta:
         model = Category
-        fields = '__all__'
-        # exclude = ('owner',)
+        # fields = '__all__'
+        exclude = ('owner',)
 
 
 class QuestionModelSerializer(serializers.ModelSerializer):

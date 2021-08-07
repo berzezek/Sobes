@@ -1,0 +1,12 @@
+{% extends 'interview/base.html' %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+<h4>Добавить опрос</h4>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as.p }}
+    <input type="submit" value="Save">
+</form>
+{% endblock %}

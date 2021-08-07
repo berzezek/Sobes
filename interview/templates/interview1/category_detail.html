@@ -1,0 +1,43 @@
+{% extends 'interview/base.html' %}
+
+{% block content %}
+
+{% load rest_framework %}
+
+<div class="container">
+    <div class="shadow rounded p-3 my-5">
+        <h4 class="text-center">Номер опроса № {{ category.pk }}</h4>
+
+        <ul class="mb-5 ms-5">
+            <li class="my-5">
+                <p>Наименование опроса: {{ category.title }}</p>
+            </li>
+            <li class="my-5">
+                <p>Описание: {{ category.description }}</p>
+            </li>
+            <li class="my-5">
+                <p>Автор: {{ category.title }}</p>
+            </li>
+            <li class="my-5">
+                <p>Дата начала: {{ category.start_date|default_if_none:"Не определена" }}</p>
+            </li>
+            <li class="my-5">
+                <p>Дата окончания: {{ category.end_date|default_if_none:"Не определена" }}</p>
+            </li>
+        </ul>
+        <a href="{% url 'category_delete' pk=category.pk %}" class="btn btn-secondary my-5 ms-5">Удалить</a>
+    </div>
+    <hr class="my-3">
+    <div class="shadow rounded p-3 my-5">
+        <h4 class="text-center">Изменить опрос</h4>
+        <form action="{% url 'category_detail' pk=category.pk %}" method="POST" class="p-5">
+            {% csrf_token %}
+            {% render_form serializer %}
+            <input type="submit" value="Сохранить">
+        </form>
+    </div>
+</div>
+<br>
+<br>
+
+{% endblock %}

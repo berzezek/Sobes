@@ -1,13 +1,11 @@
 from django.urls import path
-from .views import CategoryDetail, CategoryList, CategoryCreate, QuestionList, ChoiceList, AnswerList
-# from rest_framework.documentation import include_docs_urls
+
+from .views import CategoryListView, CategoryDetailView, category_create, QuestionDetailView
 
 urlpatterns = [
-    path('', CategoryList.as_view(), name='category_list'),
-    path('create/', CategoryCreate.as_view(), name='category_create'),
-    path('<int:pk>', CategoryDetail.as_view(), name='category_detail'),
-    path('question/', QuestionList.as_view(), name='question_list'),
-    path('choice/', ChoiceList.as_view()),
-    path('answer/', AnswerList.as_view()),
-    # path('docs/', include_docs_urls(title='My API title'))
+    path('', CategoryListView.as_view(), name='list'),
+    path('interview/<slug>/', CategoryDetailView.as_view(), name='category_detail'),
+    path('interview/<slug>/<q_slug>', QuestionDetailView.as_view(), name='question_detail'),
+
+    path('create/', category_create, name='create'),
 ]

@@ -1,18 +1,55 @@
 {% extends 'interview/base.html' %}
 
+{% block title %}{{ title }}{% endblock %}
+
 {% block content %}
 
-{% load rest_framework %}
-
 <div class="container">
+    <div class="shadow rounded p-3 my-5">
 
-    <h4 class="text-center">Номер опроса - {{ category.pk }}</h4>
+        <h3 class="text-center my-3 display-6">{{ category.title }}</h3>
+        <div class="container">
+            <h5 class="ms-5 my-2">Вопросы</h5>
+            <ul>
+                {% for q in questions %}
+                <li>
+                    <div class="container">
+                        <!--                        Здесь-->
+                        <a href="{{ q.get_absolute_url }}"><h6>{{ q.title }}</h6></a>
+                        <p>{{ type }}</p>
+                        <p>{{ slug }}</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="d-flex justify-content-end container text-muted">
+            <div>
+                <ul class="mb-5 ms-5">
+                    <li class="my-1">
+                        <p>Описание: {{ category.description }}</p>
+                    </li>
+                    <li class="my-1">
+                        <p>Автор: {{ category.owner }}</p>
+                    </li>
+                    <li class="my-1">
+                        <p>Дата начала: {{ category.start_date|default_if_none:"Не определена" }}</p>
+                    </li>
+                    <li class="mt-1 mb-5">
+                        <p>Дата окончания: {{ category.end_date|default_if_none:"Не определена" }}</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-    <form action="{% url 'category_detail' pk=category.pk %}" method="POST">
-        {% csrf_token %}
-        {% render_form serializer %}
-        <input type="submit" value="Сохранить">
-    </form>
+        <a href="{# url 'answer' pk=category.pk #}" class="btn btn-secondary my-5 ms-5">Пройти опрос</a>
+        {% if user.is_authenticated %}
+        <a href="{# url 'category_delete' pk=category.pk #}" class="btn btn-secondary my-5 ms-5">Удалить</a>
+        {% endif %}
+
+    </div>
 </div>
+<br>
+<br>
 
 {% endblock %}
