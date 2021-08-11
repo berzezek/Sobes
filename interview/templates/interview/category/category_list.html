@@ -16,19 +16,17 @@
                     <h4>{{ el.title }}</h4>
                     <p class="ms-2 text-muted">{{ el.description }}</p>
                     <p class="text-end"> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
-                    {% if user.is_authenticated %}
                     <a href="{{ el.get_absolute_url }}">Подробнее</a>
-                    {% endif %}
                 </div>
             </div>
         </li>
         {% endfor %}
     </ul>
+
     {% if user.is_authenticated %}
     <a href="{% url 'create' %}" class="btn btn-secondary shadow">Создать опрос</a>
     {% endif %}
 </div>
 <br>
-<br>
-<br>
+
 {% endblock %}

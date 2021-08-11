@@ -1,9 +1,19 @@
 from django import forms
-from .models import Category
+from .models import Category, Question, Choice, Answer
 from django.contrib.auth.models import User
 
 
 class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = [
+            'owner',
+            'title',
+            'description',
+            'start_date',
+            'end_date'
+        ]
+
     owner = forms.ModelChoiceField(
         queryset=User.objects.all(),
         label='Автор',
@@ -11,12 +21,7 @@ class CategoryForm(forms.ModelForm):
         widget=forms.Select(
             attrs={'class': 'form-select'}
         ),
-
     )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['owner'].queryset = User.objects.filter(id=1)
 
     title = forms.CharField(
         label='Название опроса',
@@ -25,13 +30,15 @@ class CategoryForm(forms.ModelForm):
             attrs={'class': 'form-control'}
         )
     )
+
     description = forms.CharField(
         label='Описание опроса',
         required=True,
-        widget=forms.Textarea(
+        widget=forms.TextInput(
             attrs={'class': 'form-control'}
         )
     )
+
     start_date = forms.DateField(
         label='Начало опроса',
         required=False,
@@ -39,6 +46,7 @@ class CategoryForm(forms.ModelForm):
             attrs={'class': 'form-control w-25 my-1', 'placeholder': 'После начала опроса вы не сможете изменить его'}
             )
     )
+
     end_date = forms.DateField(
         label='Окончание опроса',
         required=False,
@@ -47,6 +55,67 @@ class CategoryForm(forms.ModelForm):
         )
     )
 
+class QuestionForm(forms.ModelForm):
     class Meta:
-        model = Category
-        fields = ['owner', 'title', 'description', 'start_date', 'end_date']
+        model = Question
+        fields = [
+            'category',
+            'title',
+            'type',
+        ]
+
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        label='Наименование опроса',
+        required=True,
+        widget=forms.Select(
+            attrs={'class': 'form-select'}
+        ),
+    )
+
+    title = forms.CharField(
+        label='Название вопроса',
+
+        required=True,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )
+
+    TYPE_QUESTION = (
+        ('1', 'Текст'),
+        ('2', 'Выбор'),
+        ('3', 'Опция'),
+    )
+    type = forms.ChoiceField(
+        label='Тип ответа',
+        choices=TYPE_QUESTION,
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'form-control'}
+            )
+    )
+
+
+class ChoiceForm(forms.ModelForm):
+    class Meta:
+        model = Choice
+        fields = [
+            'question',
+            'answer',
+        ]
+    question = forms.ModelChoiceField(
+        queryset=Question.objects.all(),
+        label='Наименование вопроса',
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'form-select'}
+        ),
+    )
+    answer = forms.CharField(
+        label='Вариант',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control'}
+        )
+    )

@@ -1,9 +1,9 @@
 {% extends 'interview/base.html' %}
 
 {% block content %}
-
+<h4 class="mt-5">Добавить опрос</h4>
 {% load crispy_forms_tags %}
-<h4>Добавить опрос</h4>
+
 <form method="post">
     {% csrf_token %}
     {{ form.as.p }}

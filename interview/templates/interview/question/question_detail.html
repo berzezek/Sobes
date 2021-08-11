@@ -18,16 +18,9 @@
     <div class="d-flex mt-5">
 
 
-        {% if el.type == '1' %}
-        <p>Ответ текстом</p>
-        {% else %}
-        <p class="ms-3 text-muted">Варианты ответов:</p>
-        {% endif %}
-
         {% if el.type != '1' %}
-
+        <p class="ms-3 text-muted">Варианты ответов:</p>
         <div>
-
             {% for c in choice %}
             <ul class="ms-5">
                 <li>
@@ -35,18 +28,14 @@
                 </li>
             </ul>
             {% endfor %}
-
         </div>
-
-        {% else %}
-        <p>Ответ текстом</p>
         {% endif %}
     {% endfor %}
     </div>
     <hr>
     <div class="d-flex mt-5">
-        <a href="{% url 'category_detail' slug=category.slug %}" class="btn btn-secondary mx-5">Венуться к опросу</a>
-        <a href="{# url 'question_delete' slug=category.slug q_slug=question.slug #}" class="btn btn-secondary">Удалить
+        <a href="{% url 'category_detail' pk=category.pk %}" class="btn btn-secondary mx-5">Венуться к опросу</a>
+        <a href="{# url 'question_delete' pk=category.pk q_pk=question.pk #}" class="btn btn-secondary">Удалить
             вопрос</a>
     </div>
 </div>

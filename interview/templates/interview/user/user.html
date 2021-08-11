@@ -1,0 +1,28 @@
+{% extends 'interview/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Авторизация{% endblock %}
+
+{% block content %}
+
+<style>
+   .form-registry input {
+    display: block;
+    width: 98%;
+    padding: 1%;
+    margin-top: 20px;
+    border: solid silver;
+    border-radius: 5px;
+   }
+</style>
+
+<div class="container mb-5">
+    <h4 class="my-5 text-center">Авторизация</h4>
+    <form method="post" class="form-registry">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-secondary my-3">Авторизоваться</button>
+    </form>
+</div>
+<br>
+
+{% endblock %}

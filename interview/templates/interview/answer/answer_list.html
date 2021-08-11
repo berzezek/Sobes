@@ -1,0 +1,29 @@
+{% extends 'interview/base.html' %}
+{% block content %}
+<div class="container mb-5">
+    <h3 class="text-center my-5">Ответы пользователей</h3>
+    {% for el in answers %}
+    <div class="container">
+        <p class="text-end">id ответа: {{ el.id }}</p>
+        <p>Категория: {{ el.category }}</p>
+        <p>Вопрос: {{ el.question }}</p>
+        <p>Вариант ответа: {{ el.question.get_type_display }}</p>
+        <p>Ответ:</p>
+        <p class="ms-5">
+            {% if el.answer_text %}
+            {{ el.answer_text }}
+            {% endif %}
+
+            {% if el.answer_choice %}
+            {{ el.answer_choice }}
+            {% endif %}
+
+            {% if el.answer_multi %}
+            {% for area in el.answer_multi.all %}{{ area }}<br/>{% endfor %}
+            {% endif %}
+        </p>
+    </div>
+    <hr>
+    {% endfor %}
+</div>
+{% endblock %}

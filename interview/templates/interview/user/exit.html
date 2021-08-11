@@ -1,0 +1,11 @@
+{% extends 'interview/base.html' %}
+{% block title %}Выход{% endblock %}
+
+{% block content %}
+
+<div class="container mb-5">
+    <h4 class="my-5 text-center">Вы успешно вышли с аккаунта</h4>
+    <a href="{{ url 'user' %}" class="btn btn-secondary mt-5">Войти снова</a>
+</div>
+<br>
+{% endblock %}
