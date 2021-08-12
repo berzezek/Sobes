@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-5">
-
+    {% if user.is_authenticated %}
     <h4 class="text-center mb-3">Опрос: {{ category.title }}</h4>
     <hr>
     <h5 class="my-3">Вопрос: {{ title }}</h5>
@@ -17,14 +17,13 @@
 
     <div class="d-flex mt-5">
 
-
         {% if el.type != '1' %}
         <p class="ms-3 text-muted">Варианты ответов:</p>
         <div>
             {% for c in choice %}
             <ul class="ms-5">
                 <li>
-                    <p>{{ c }}</p>
+                    <p>{{ c.title }}</p>
                 </li>
             </ul>
             {% endfor %}
@@ -35,8 +34,12 @@
     <hr>
     <div class="d-flex mt-5">
         <a href="{% url 'category_detail' pk=category.pk %}" class="btn btn-secondary mx-5">Венуться к опросу</a>
-        <a href="{# url 'question_delete' pk=category.pk q_pk=question.pk #}" class="btn btn-secondary">Удалить
-            вопрос</a>
+        <a href="{% url 'q_delete' pk=question.pk %}" class="btn btn-secondary">Удалить вопрос</a>
     </div>
+    {% else %}
+
+    <p>Для редактирования вам нужно <a href="{% url 'user' %}">авторизоваться</a></p>
+    <a href="{% url 'category_detail' pk=category.pk %}" class="btn btn-secondary mt-5">Венуться к опросу</a>
+    {% endif %}
 </div>
 {% endblock %}

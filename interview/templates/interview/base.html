@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %}</title>
     <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/cerulean/bootstrap.min.css">
 </head>
 <body>
 <header class="navbar navbar-dark bg-dark shadow-sm py-3">
@@ -20,16 +20,18 @@
     <a href="{% url 'user' %}" class="btn btn-secondary me-5">Войти</a>
     {% endif %}
 </header>
-
 {% if messages %}
-    {% for mess in messages %}
-    <div class="alert alert-success">{{ mess }}</div>
-    {% endfor %}
+    <div class="container my-5">
+        {% for mess in messages %}
+        <div class="alert alert-success">{{ mess }}</div>
+        {% endfor %}
+    </div>
 {% endif %}
 
-
 {% block content %}
+
 {% endblock %}
+
 <footer class="footer mt-5 py-3 bg-light fixed-bottom">
     <div class="container">
         <a href="https://github.com/berzezek/Sobes.git">
@@ -41,6 +43,6 @@
 <!--<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>-->
 <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>-->
 <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>-->
-<!--<script src="{% static 'polls/js/main.js' %}"></script>-->
+<!--<script src="{% static 'interview/js/main.js' %}"></script>-->
 </body>
 </html>

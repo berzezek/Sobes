@@ -1,0 +1,26 @@
+{% extends 'interview/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="shadow rounded p-3 my-5">
+        <h3 class="text-center my-3 display-6">{{ question.title }}</h3>
+        <div class="container">
+            <h5 class="ms-5 my-2">Вопросы</h5>
+            <ul>
+                {% for c in choice %}
+                <li>
+                    <div class="container">
+                        <!--                        Здесь-->
+                        <a href="{{ c.get_absolute_url }}"><h6>{{ q.title }}</h6></a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </d</div>
+<br>
+
+{% endblock %}

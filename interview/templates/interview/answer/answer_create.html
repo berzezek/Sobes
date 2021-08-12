@@ -1,15 +1,14 @@
 {% extends 'interview/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Создать опрос{% endblock %}
+{% block title %}Прохождение опроса{% endblock %}
 
 {% block content %}
-
 <div class="container mb-5">
-    <h4 class="my-5 text-center">Добавить опрос</h4>
+    <h4 class="my-5 text-center">Пройти опрос</h4>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}
-        <input type="submit" class="btn btn-secondary my-3" value="Создать">
+        <input type="submit" class="btn btn-secondary my-3" value="Пройти">
     </form>
 </div>
 <br>

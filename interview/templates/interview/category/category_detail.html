@@ -6,21 +6,24 @@
 
 <div class="container">
     <div class="shadow rounded p-3 my-5">
-
         <h3 class="text-center my-3 display-6">{{ category.title }}</h3>
+        <p class="text-end text-muted me-5">Количество вопросов: {{ count }}</p>
         <div class="container">
-            <h5 class="ms-5 my-2">Вопросы</h5>
+            <h5 class="ms-5 my-5">Вопросы</h5>
             <ul>
                 {% for q in questions %}
                 <li>
                     <div class="container">
-                        <!--                        Здесь-->
-                        <a href="{{ q.get_absolute_url }}"><h6>{{ q.title }}</h6></a>
-                        <p>{{ type }}</p>
-                        <p>{{ slug }}</p>
+                        {% if user.is_authenticated %}
+                        <a href="{{ q.get_absolute_url }}" class="text-decoration-none"><p>{{ q.title }}</p></a>
+                        {% else %}
+                        <p>{{ q.title }}</p>
+                        {% endif %}
                     </div>
                 </li>
+
                 {% endfor %}
+
             </ul>
         </div>
         <div class="d-flex justify-content-end container text-muted">
@@ -43,7 +46,7 @@
                     </li>
                     <div class="btn-group-vertical">
                         {% if user.is_authenticated %}
-                        {% if category.elapse >= 1 %}
+                        {% if category.elapse >= 0 %}
                         <a href="{% url 'category_update' pk=category.pk %}">
                             <button type="button" class="btn btn-warning">Изменить</button>
                         </a>
@@ -61,7 +64,7 @@
 
         </div>
 
-        <a href="{# url 'answer' pk=category.pk #}" class="btn btn-secondary my-5 ms-3">Пройти опрос</a>
+        <a href="{% url 'answer_create' %}" class="btn btn-secondary my-5 ms-3">Пройти опрос</a>
 
     </div>
 </div>

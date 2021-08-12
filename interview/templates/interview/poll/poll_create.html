@@ -6,11 +6,13 @@
 {% block content %}
 
 <div class="container mb-5">
-    <h4 class="my-5 text-center">Добавить вопрос</h4>
+    <h4 class="my-5 text-center">Пройти Опрос</h4>
     <form method="post" action="">
         {% csrf_token %}
         {{ form|crispy }}
-        <input type="submit" class="btn btn-secondary my-3" value="Создать">
+        <input type="submit" class="btn btn-secondary my-3" value="Отправить">
     </form>
+
 </div>
+
 {% endblock %}

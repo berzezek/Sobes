@@ -5,28 +5,28 @@
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container my-5">
     <h3 class="text-center">Опросы</h3>
+    {% if user.is_authenticated %}
+    <div class="d-flex justify-content-end mb-3">
+        <a href="{% url 'category_create' %}" class="btn btn-secondary shadow">Создать опрос</a>
+    </div>
+    {% endif %}
     <p class="text-end mb-5 me-5">Количество доступных опросов - {{ count }}</p>
     <ul>
         {% for el in categories %}
         <li class="my-5">
             <div class="shadow p-3 rounded">
-                <div class="container">
+                <div class="container p-3">
                     <h4>{{ el.title }}</h4>
                     <p class="ms-2 text-muted">{{ el.description }}</p>
                     <p class="text-end"> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
-                    <a href="{{ el.get_absolute_url }}">Подробнее</a>
+                    <a href="{{ el.get_absolute_url }}" class="btn btn-warning shadow">Подробнее</a>
                 </div>
             </div>
         </li>
         {% endfor %}
     </ul>
-
-    {% if user.is_authenticated %}
-    <a href="{% url 'create' %}" class="btn btn-secondary shadow">Создать опрос</a>
-    {% endif %}
 </div>
-<br>
 
 {% endblock %}
