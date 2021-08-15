@@ -1,6 +1,6 @@
 {% extends 'interview/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}{{ title }}{% endblock %}
+{% block title %}Добавить вариант{% endblock %}
 
 {% block content %}
 
@@ -11,7 +11,6 @@
         {{ form|crispy }}
         <input type="submit" class="btn btn-secondary my-3" value="Создать">
     </form>
-    <a href="{% url 'category_detail' %}"></a>
 </div>
 <br>
 

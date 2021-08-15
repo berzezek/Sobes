@@ -1,18 +1,22 @@
 {% extends 'interview/base.html' %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container mt-5 shadow p-5 rounded">
     {% if user.is_authenticated %}
-    <h4 class="text-center mb-3">Опрос: {{ category.title }}</h4>
-    <hr>
-    <h5 class="my-3">Вопрос: {{ title }}</h5>
+    <h4 class="text-center my-5">Опрос: {{ category.title }}</h4>
+    <hr class="mb-5">
     {% for el in questions %}
+    <h5 class="my-3">Вопрос: {{ el.title }}</h5>
     {% if el.type == '1' %}
+
     <p>Тип ответа: текстом</p>
     {% elif el.type == '2' %}
+
     <p>Тип ответа: выбор</p>
     {% elif el.type == '3' %}
+
     <p>Тип ответа: опция</p>
+
     {% endif %}
 
     <div class="d-flex mt-5">
@@ -26,20 +30,25 @@
                     <p>{{ c.title }}</p>
                 </li>
             </ul>
+
             {% endfor %}
+            <a href="{% url 'choice_create' %}" class="btn btn-success ml-2">Добавить
+                вариант</a>
         </div>
         {% endif %}
-    {% endfor %}
+
     </div>
-    <hr>
-    <div class="d-flex mt-5">
-        <a href="{% url 'category_detail' pk=category.pk %}" class="btn btn-secondary mx-5">Венуться к опросу</a>
-        <a href="{% url 'q_delete' pk=question.pk %}" class="btn btn-secondary">Удалить вопрос</a>
+    <hr class="mt-5">
+    <div class="d-flex mt-5 justify-content-end">
+        <a href="{{ category.get_absolute_url }}" class="btn btn-secondary mx-2">Венуться к опросу</a>
+        <a href="{% url 'q_delete' pk=el.pk %}" class="btn btn-danger mx-2">Удалить вопрос</a>
+        <a href="{% url 'q_update' pk=el.pk %}" class="btn btn-info mx-2">Изменить вопрос</a>
+        {% endfor %}
     </div>
     {% else %}
 
     <p>Для редактирования вам нужно <a href="{% url 'user' %}">авторизоваться</a></p>
-    <a href="{% url 'category_detail' pk=category.pk %}" class="btn btn-secondary mt-5">Венуться к опросу</a>
+    <a href="{{ category.get_absolute_url }}" class="btn btn-secondary mt-5">Венуться к опросу</a>
     {% endif %}
 </div>
 {% endblock %}

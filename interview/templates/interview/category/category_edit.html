@@ -7,7 +7,7 @@
     {% if user.is_authenticated %}
         {% if category.elapse >= 0 %}
         <div class="container mb-5">
-            <h4 class="my-5 text-center">Изменить опрос</h4>
+            <h4 class="my-5 text-center">Изменить Oпрос</h4>
             <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}

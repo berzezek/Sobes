@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container mb-5">
-    <h4 class="my-5 text-center">Пройти опрос</h4>
+    <h4 class="my-5 text-center">Добавить ответ</h4>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}

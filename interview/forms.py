@@ -1,7 +1,7 @@
-from datetime import date, datetime
+from datetime import date
 
 from django import forms
-from .models import Category, Question, Choice, Answer
+from .models import Category, Question, Choice, Answer, Poll
 from django.contrib.auth.models import User
 
 
@@ -9,27 +9,17 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = [
-            'owner',
             'title',
             'description',
             'start_date',
             'end_date'
         ]
 
-    owner = forms.ModelChoiceField(
-        queryset=User.objects.all(),
-        label='Автор',
-        required=True,
-        widget=forms.Select(
-            attrs={'class': 'form-control'}
-        ),
-    )
-
     title = forms.CharField(
         label='Название опроса',
         required=True,
         widget=forms.TextInput(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control mb-3'}
         )
     )
 
@@ -37,13 +27,13 @@ class CategoryForm(forms.ModelForm):
         label='Описание опроса',
         required=True,
         widget=forms.TextInput(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control mb-3'}
         )
     )
 
     start_date = forms.DateField(
         initial=date.replace(date.today(), month=(date.today().month + 1)),
-        label='Начало опроса (по умолчанию + 1 месяц)',
+        label='Начало опроса',
         required=False,
         widget=forms.SelectDateWidget(
             attrs={'class': 'form-control w-auto my-1 ', 'placeholder': 'После начала опроса вы не сможете изменить его'}
@@ -52,7 +42,7 @@ class CategoryForm(forms.ModelForm):
 
     end_date = forms.DateField(
         initial=date.replace(date.today(), year=(date.today().year + 1)),
-        label='Окончание опроса (по умолчанию + 1 год)',
+        label='Окончание опроса',
         required=False,
         widget=forms.SelectDateWidget(
             attrs={'class': 'form-control w-auto d-flex justify-content-between'}
@@ -74,7 +64,7 @@ class QuestionForm(forms.ModelForm):
         label='Наименование опроса',
         required=True,
         widget=forms.Select(
-            attrs={'class': 'form-select'}
+            attrs={'class': 'form-control mb-3'}
         ),
     )
 
@@ -83,7 +73,7 @@ class QuestionForm(forms.ModelForm):
 
         required=True,
         widget=forms.TextInput(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control mb-3'}
         )
     )
 
@@ -114,14 +104,14 @@ class ChoiceForm(forms.ModelForm):
         label='Наименование вопроса',
         required=False,
         widget=forms.Select(
-            attrs={'class': 'form-select'}
+            attrs={'class': 'form-control mb-3'}
         ),
     )
     answer = forms.CharField(
         label='Вариант',
         required=False,
         widget=forms.TextInput(
-            attrs={'class': 'form-control'}
+            attrs={'class': 'form-control mb-3'}
         )
     )
 
@@ -136,3 +126,14 @@ class AnswerForm(forms.ModelForm):
                   'answer_choice',
                   'answer_multi'
                   ]
+
+
+class PollForm(forms.ModelForm):
+    model = Poll
+    fields = [
+        'category',
+        'question',
+        'answer_text',
+        'answer_choice',
+        'answer_multi'
+      ]

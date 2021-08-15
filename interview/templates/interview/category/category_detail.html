@@ -7,9 +7,10 @@
 <div class="container">
     <div class="shadow rounded p-3 my-5">
         <h3 class="text-center my-3 display-6">{{ category.title }}</h3>
-        <p class="text-end text-muted me-5">Количество вопросов: {{ count }}</p>
+
         <div class="container">
-            <h5 class="ms-5 my-5">Вопросы</h5>
+            <h5 class="ml-5 my-3">Вопросы</h5>
+            <p class="text-end text-muted ml-5 small">Количество вопросов: {{ count }}</p>
             <ul>
                 {% for q in questions %}
                 <li>
@@ -25,6 +26,8 @@
                 {% endfor %}
 
             </ul>
+
+            <a href="{% url 'answer_create' %}" class="btn btn-secondary my-5 ms-3">Пройти опрос</a>
         </div>
         <div class="d-flex justify-content-end container text-muted">
             <div>
@@ -48,12 +51,12 @@
                         {% if user.is_authenticated %}
                         {% if category.elapse >= 0 %}
                         <a href="{% url 'category_update' pk=category.pk %}">
-                            <button type="button" class="btn btn-warning">Изменить</button>
+                            <button type="button" class="btn btn-info shadow">Изменить</button>
                         </a>
                         <a href="{% url 'category_delete' pk=category.pk %}" class="my-3">
-                            <button type="button" class="btn btn-danger">Удалить</button>
+                            <button type="button" class="btn btn-danger shadow">Удалить</button>
                         </a>
-                        <a href="{% url 'q_create' %}" class="btn btn-secondary">Добавить вопрос</a>
+                        <a href="{% url 'q_create' %}" class="btn btn-secondary shadow">Добавить вопрос</a>
                         {% else %}
                         <p>Опрос начался</p>
                         {% endif %}
@@ -64,7 +67,6 @@
 
         </div>
 
-        <a href="{% url 'answer_create' %}" class="btn btn-secondary my-5 ms-3">Пройти опрос</a>
 
     </div>
 </div>

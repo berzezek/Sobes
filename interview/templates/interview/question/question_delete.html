@@ -1,24 +1,20 @@
 {% extends 'interview/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Удалить {{ question.title }}{% endblock %}
+{% block title %}Удалить {{ object.title }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
     {% if user.is_authenticated %}
-        {% if category.elapse >= 1 %}
         <div class="container mb-2">
             <h4 class="mb-2 text-center">Удалить вопрос "{{ question.title }}"</h4>
             <form method="post" class="text-center">
+                {% csrf_token %}
                 <input type="submit" class="btn btn-danger my-3" value="Удалить">
             </form>
         </div>
-        <br>
-        {% else %}
-        <p>Вы не можете удалить категорию, потому что опрос уже начался!</p>
-        {% endif %}
     {% else %}
     <h5>Только для <a href="{% url 'user' %}">зарегистрированных</a> пользователей</h5>
     {% endif %}
-    <a href="{% url 'list' %}" class="btn btn-secondary">Вернуться</a>
+    <a href="/" class="btn btn-secondary">Вернуться</a>
 </div>
 {% endblock %}

@@ -12,21 +12,26 @@
         <a href="{% url 'category_create' %}" class="btn btn-secondary shadow">Создать опрос</a>
     </div>
     {% endif %}
-    <p class="text-end mb-5 me-5">Количество доступных опросов - {{ count }}</p>
-    <ul>
-        {% for el in categories %}
-        <li class="my-5">
-            <div class="shadow p-3 rounded">
-                <div class="container p-3">
-                    <h4>{{ el.title }}</h4>
-                    <p class="ms-2 text-muted">{{ el.description }}</p>
-                    <p class="text-end"> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
-                    <a href="{{ el.get_absolute_url }}" class="btn btn-warning shadow">Подробнее</a>
-                </div>
+    <div class="d-flex justify-content-end mb-3">
+        <p class="text-end text-muted me-5">Количество доступных опросов - {{ count }}</p>
+    </div>
+
+    {% for el in categories %}
+
+    <div class="shadow p-3 rounded">
+        <div class="container p-3 my-2">
+            <h4>{{ el.title }}</h4>
+            <p class="ms-2 text-muted">{{ el.description }}</p>
+            <p class="small text-muted"> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
+            <div class="d-flex justify-content-end">
+                <a href="{{ el.get_absolute_url }}"
+                   class="btn btn-info shadow">Подробнее</a>
             </div>
-        </li>
-        {% endfor %}
-    </ul>
+        </div>
+    </div>
+
+    {% endfor %}
+
 </div>
 
 {% endblock %}

@@ -9,6 +9,7 @@
         <div class="container mb-2">
             <h4 class="mb-2 text-center">Удалить опрос "{{ category.title }}"</h4>
             <form method="post" class="text-center">
+                {% csrf_token %}
                 <input type="submit" class="btn btn-danger my-3" value="Удалить">
             </form>
         </div>
