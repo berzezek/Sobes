@@ -4,15 +4,22 @@
 
 {% block content %}
 
-<div class="container  mt-5 shadow rounded p-5">
-    <h4 class="text-center">Добавить вариант</h4>
-    <p class="ml-5">Опрос: {{ category }}, Вопрос: {{ question }}</p>
-    <form method="post" action="">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" class="btn btn-success my-3" value="Добавить вариант">
-        <a href="{% url 'q_detail' pk=category.pk q_pk=question.pk %}" class="btn btn-secondary ml-3">Вернуться к вопросу</a>
-    </form>
+<div class="container shadow rounded p-5">
+    <div class="container mb-2">
+        <h4 class="text-center">Добавить вариант</h4>
+        <p class="ml-5">Опрос: {{ category }}, Вопрос: {{ question }}</p>
+
+        <form method="post">
+            {% csrf_token %}
+            {% for el in '123' %}
+            {{ form|crispy }}
+            {% endfor %}
+            <input type="submit" class="btn btn-secondary my-3 shadow" value="Создать">
+        </form>
+
+    </div>
+    <a href="{% url 'q_detail' pk=category.pk q_pk=question.pk %}" class="btn btn-secondary ml-3 shadow">Вернуться к
+        вопросу</a>
 </div>
 <br>
 

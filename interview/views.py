@@ -2,7 +2,7 @@ from datetime import date
 
 from django.http import HttpResponseRedirect, request
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
@@ -99,6 +99,7 @@ class QuestionCreateView(CreateView):
     model = Question
     template_name = 'interview/question/question_create.html'
     form_class = QuestionForm
+    success_url = reverse_lazy('list')
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -119,6 +120,7 @@ class QuestionUpdateView(UpdateView):
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        # context['questions'] = Question.objects.filter(category=context['category']).filter(pk=self.kwargs['q_pk'])
         return context
 
     def form_valid(self, form):
@@ -135,11 +137,12 @@ class QuestionDeleteView(DeleteView):
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        context['question'] = Question.objects.filter(pk=self.kwargs['q_pk']).first()
         return context
 
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - удален')
-        super().form_valid(form)
+        # super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -151,7 +154,7 @@ class ChoiceCreateView(CreateView):
     model = Choice
     template_name = 'interview/choice/choice_create.html'
     form_class = ChoiceForm
-    success_url = '/'
+    success_url = 'list'
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -160,6 +163,7 @@ class ChoiceCreateView(CreateView):
         return context
 
     def form_valid(self, form):
+        form.instance.question = Question.objects.filter(pk=self.kwargs['q_pk']).first()
         messages.success(self.request, f'Вариант ответа - добавлен')
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())

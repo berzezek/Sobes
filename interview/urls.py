@@ -9,7 +9,6 @@ from .views import (
     CategoryUpdateView,
 
     QuestionDetailView,
-    # question_update,
     QuestionCreateView,
     QuestionUpdateView,
     QuestionDeleteView,

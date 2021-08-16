@@ -6,8 +6,8 @@
 
 <div class="container mt-5">
     <div class="container mb-2">
-        <h4 class="mb-2 text-center">Удалить вопрос "{{ question.title }}"</h4>
-        {% include "forms/form_delete.html" %}
+        <h4 class="mb-2 text-center">Удалить вопрос "{{ object.title }}"</h4>
+<!--        {% include "forms/form_delete.html" %}-->
     </div>
     <a href="{% url 'list' %}" class="btn btn-secondary">Вернуться</a>
 </div>
