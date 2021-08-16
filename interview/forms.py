@@ -97,7 +97,7 @@ class ChoiceForm(forms.ModelForm):
         model = Choice
         fields = [
             'question',
-            'answer',
+            'title',
         ]
     question = forms.ModelChoiceField(
         queryset=Question.objects.all(),
@@ -107,7 +107,7 @@ class ChoiceForm(forms.ModelForm):
             attrs={'class': 'form-control mb-3'}
         ),
     )
-    answer = forms.CharField(
+    title = forms.CharField(
         label='Вариант',
         required=False,
         widget=forms.TextInput(
@@ -121,10 +121,18 @@ class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = [
-            'owner',
-            'category',
+            # 'owner',
+            # 'category',
             'question',
             'answer_text',
             'answer_choice',
             'answer_multi'
         ]
+    #
+    # question = forms.CharField(
+    #     label='Вопрос',
+    #     required=True,
+    #     widget=forms.TextInput(
+    #         attrs={'class': 'form-control mb-3'}
+    #     )
+    # )

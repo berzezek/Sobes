@@ -1,5 +1,4 @@
 {% extends 'interview/base.html' %}
-{% load crispy_forms_tags %}
 
 {% block title %}Добавить вопрос{% endblock %}
 
@@ -8,10 +7,7 @@
 <div class="container mb-5">
     <h4 class="my-5 text-center">Добавить вопрос</h4>
     <p class="small">Опрос: {{ category.title }}</p>
-    <form method="post" action="">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <input type="submit" class="btn btn-secondary my-3" value="Создать">
-    </form>
+    {% include "forms/form_add.html" %}
 </div>
+<br>
 {% endblock %}

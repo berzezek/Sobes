@@ -1,0 +1,11 @@
+{% load crispy_forms_tags %}
+
+{% if user.is_authenticated %}
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" class="btn btn-secondary my-3 shadow" value="Создать">
+</form>
+{% else %}
+    {% include "forms/login.html" %}
+{% endif %}

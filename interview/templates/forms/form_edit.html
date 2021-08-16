@@ -1,0 +1,15 @@
+{% load crispy_forms_tags %}
+
+{% if user.is_authenticated %}
+{% if category.elapse >= 0 %}
+<form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" class="btn btn-danger my-3 shadow" value="Изменить">
+</form>
+{% else %}
+<p>Вы не можете изменить, потому что опрос уже начался!</p>
+{% endif %}
+{% else %}
+    {% include "forms/login.html" %}
+{% endif %}

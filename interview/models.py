@@ -85,7 +85,4 @@ class Answer(models.Model):
     answer_multi = models.ManyToManyField(Choice, blank=True, related_name='answer_multi')
 
     def __str__(self):
-        return self.pk
-
-    def get_absolute_url(self):
-        return reverse('answer_create', kwargs={'pk': self.pk})
+        return str(self.pk)

@@ -1,0 +1,14 @@
+{% load crispy_forms_tags %}
+
+{% if user.is_authenticated %}
+{% if category.elapse >= 0 %}
+<form method="post" class="text-center">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger my-3 shadow" value="Удалить">
+</form>
+{% else %}
+<p>Вы не можете удалить, потому что опрос уже начался!</p>
+{% endif %}
+{% else %}
+    {% include "forms/login.html" %}
+{% endif %}

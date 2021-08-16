@@ -1,7 +1,8 @@
 from datetime import date
 
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, request
+from django.db.models import Q
+from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
@@ -90,6 +91,7 @@ class QuestionDetailView(DetailView):
         context['questions'] = Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk'])
         question = list(Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk']).values())
         context['question'] = question[0]
+        context['choice'] = Choice.objects.filter(question=Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk']).first())
         return context
 
 
@@ -114,6 +116,11 @@ class QuestionUpdateView(UpdateView):
     template_name = 'interview/question/question_edit.html'
     form_class = QuestionForm
 
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        return context
+
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - обновлен')
         super().form_valid(form)
@@ -124,6 +131,11 @@ class QuestionDeleteView(DeleteView):
     model = Question
     template_name = 'interview/question/question_delete.html'
     success_url = reverse_lazy('list')
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - удален')
@@ -139,7 +151,7 @@ class ChoiceCreateView(CreateView):
     model = Choice
     template_name = 'interview/choice/choice_create.html'
     form_class = ChoiceForm
-    # success_url = reverse_lazy('choice_create')
+    success_url = '/'
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -159,12 +171,42 @@ class ChoiceCreateView(CreateView):
 class AnswerListView(ListView):
     """Ответы пользователей"""
     model = Answer
-    context_object_name = 'answers'
-    template_name = 'interview/answer/answer_list.html'
+    template_name = 'interview/answer/answer_search.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        object_list = Answer.objects.filter(
+            Q(pk__icontains=query)
+        )
+        return object_list
 
 
-class AnswerCreateView(CreateView):
-    model = Answer
-    form_class = AnswerForm
-    template_name = 'interview/answer/answer_create.html'
+# class AnswerCreateView(CreateView):
+#     model = Answer
+#     form_class = AnswerForm
+#     template_name = 'interview/answer/answer_create.html'
+#     success_url = reverse_lazy('list')
+#
+#     def form_valid(self, form):
+#         messages.success(self.request, f'Опрос - пройден')
+#         super().form_valid(form)
+#         return HttpResponseRedirect(self.get_success_url())
 
+
+def get_name(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = AnswerForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect('list')
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = AnswerForm()
+
+    return render(request, 'interview/answer/answer_create.html', {'form': form})

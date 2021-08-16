@@ -1,22 +1,14 @@
 {% extends 'interview/base.html' %}
-{% load crispy_forms_tags %}
-{% block title %}Обновить {{ object.title }}{% endblock %}
+
+{% block title %}Обновить - {{ object.title }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    {% if user.is_authenticated %}
-    <div class="container mb-5">
-        <h4 class="my-5 text-center">Изменить вопрос</h4>
-        <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <a href="{{ object.get_absolute_url }}" class="btn btn-secondary mr-2">Вернуться</a>
-            <input type="submit" class="btn btn-info my-3" value="Изменить">
-        </form>
+    <div class="container mb-2">
+        <h4 class="mb-2 text-center">Изменить вопрос "{{ object.title }}"</h4>
+        {% include "forms/form_edit.html" %}
     </div>
-    {% else %}
-    <h5>Только для <a href="{% url 'user' %}">зарегистрированных</a> пользователей</h5>
-    {% endif %}
+    <a href="{% url 'list' %}" class="btn btn-secondary ml-3">Вернуться</a>
 </div>
 <br>
 {% endblock %}
