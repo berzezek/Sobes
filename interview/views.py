@@ -141,6 +141,12 @@ class ChoiceCreateView(CreateView):
     form_class = ChoiceForm
     # success_url = reverse_lazy('choice_create')
 
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        context['question'] = Question.objects.filter(pk=self.kwargs['q_pk']).first()
+        return context
+
     def form_valid(self, form):
         messages.success(self.request, f'Вариант ответа - добавлен')
         super().form_valid(form)

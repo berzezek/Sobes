@@ -37,7 +37,7 @@ urlpatterns = [
     path('answer/', AnswerListView.as_view(), name='answer_list'),
     path('answer/create/', AnswerCreateView.as_view(), name='answer_create'),
 
-    # path('interview/<pk>/<q_pk>/create/', ChoiceCreateView.as_view(), name='choice_create'),
+    path('interview/<pk>/<q_pk>/create/', ChoiceCreateView.as_view(), name='choice_create'),
 
     path('user/', LoginView.as_view(template_name='interview/user/user.html'), name='user'),
     path('exit/', LogoutView.as_view(template_name='interview/user/exit.html'), name='exit'),
