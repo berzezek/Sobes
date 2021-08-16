@@ -15,11 +15,9 @@
     <div class="d-flex justify-content-end mb-3">
         <p class="text-end text-muted me-5">Количество доступных опросов - {{ count }}</p>
     </div>
-
     {% for el in categories %}
-
-    <div class="shadow p-3 rounded">
-        <div class="container p-3 my-2">
+    <div class="shadow p-3 rounded mb-3">
+        <div class="container p-3">
             <h4>{{ el.title }}</h4>
             <p class="ms-2 text-muted">{{ el.description }}</p>
             <p class="small text-muted"> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
@@ -29,9 +27,9 @@
             </div>
         </div>
     </div>
-
     {% endfor %}
-
 </div>
+<br>
+<br>
 
 {% endblock %}

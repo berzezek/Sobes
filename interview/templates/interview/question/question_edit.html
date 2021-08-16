@@ -1,6 +1,6 @@
 {% extends 'interview/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Обновить вопрос {{ object.title }}{% endblock %}
+{% block title %}Обновить {{ object.title }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
@@ -10,6 +10,7 @@
         <form method="post">
             {% csrf_token %}
             {{ form|crispy }}
+            <a href="{{ object.get_absolute_url }}" class="btn btn-secondary mr-2">Вернуться</a>
             <input type="submit" class="btn btn-info my-3" value="Изменить">
         </form>
     </div>

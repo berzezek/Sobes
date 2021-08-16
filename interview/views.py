@@ -5,8 +5,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
-from .models import Category, Question, Choice, Answer, Poll
-from .forms import CategoryForm, QuestionForm, ChoiceForm, AnswerForm, PollForm
+from .models import Category, Question, Choice, Answer
+from .forms import CategoryForm, QuestionForm, ChoiceForm, AnswerForm
 from django.contrib import messages
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -22,7 +22,7 @@ class CategoryListView(ListView):
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all().exclude(end_date__lte=date.today())
+        context['categories'] = Category.objects.all().exclude(end_date__lte=date.today()).order_by('-end_date')
         context['count'] = context['categories'].count()
         context['title'] = 'Главная'
         return context
@@ -81,16 +81,15 @@ class CategoryDeleteView(DeleteView):
 
 class QuestionDetailView(DetailView):
     """Вопросы по категориям"""
-    model = Question
+    model = Category
     template_name = 'interview/question/question_detail.html'
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        # category = Category.objects.filter(pk=self.kwargs['pk']).first()
-        # questions = Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk'])
-        # context['category'] = category
-        context['questions'] = Question.objects.filter(pk=self.kwargs['pk'])
-        # context['choice'] = Choice.objects.filter(question=questions.first())
+        category = Category.objects.filter(pk=self.kwargs['pk']).first()
+        context['questions'] = Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk'])
+        question = list(Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk']).values())
+        context['question'] = question[0]
         return context
 
 
@@ -98,6 +97,11 @@ class QuestionCreateView(CreateView):
     model = Question
     template_name = 'interview/question/question_create.html'
     form_class = QuestionForm
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        return context
 
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - добавлен')
@@ -109,15 +113,6 @@ class QuestionUpdateView(UpdateView):
     model = Question
     template_name = 'interview/question/question_edit.html'
     form_class = QuestionForm
-    success_url = reverse_lazy('list')
-
-    def get_context_data(self, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # questions = Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk'])
-        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
-        # context['questions'] = Question.objects.filter(pk=self.kwargs['q_pk'])
-        # context['choice'] = Choice.objects.filter(question=questions.first())
-        return context
 
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - обновлен')
@@ -128,12 +123,7 @@ class QuestionUpdateView(UpdateView):
 class QuestionDeleteView(DeleteView):
     model = Question
     template_name = 'interview/question/question_delete.html'
-    success_url = '/'
-
-    def get_context_data(self, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
-        return context
+    success_url = reverse_lazy('list')
 
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - удален')
@@ -149,15 +139,12 @@ class ChoiceCreateView(CreateView):
     model = Choice
     template_name = 'interview/choice/choice_create.html'
     form_class = ChoiceForm
+    # success_url = reverse_lazy('choice_create')
 
-    def get_context_data(self, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        category = Category.objects.filter(pk=self.kwargs['pk']).first()
-        questions = Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk'])
-        context['category'] = Category.objects.filter(pk=self.kwargs['pk'])
-        context['questions'] = Question.objects.filter(pk=self.kwargs['q_pk'])
-        context['choice'] = Choice.objects.filter(question=questions.first())
-        return context
+    def form_valid(self, form):
+        messages.success(self.request, f'Вариант ответа - добавлен')
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 """Ответы пользователей"""
@@ -175,28 +162,3 @@ class AnswerCreateView(CreateView):
     form_class = AnswerForm
     template_name = 'interview/answer/answer_create.html'
 
-
-class PollCreateView(CreateView):
-    model = Poll
-    template_name = 'interview/poll/poll_create.html'
-    fields = ['user', 'answer']
-
-    def get_success_url(self):
-        # return reverse('poll', kwargs={'pk': self.object.pk})
-        return reverse('list')
-
-
-def poll_create(request):
-    answer = Answer.objects.all()
-    if request.method == 'POST':
-        form = PollForm(request.POST)
-        if form.is_valid():
-            form.save()
-            for el in answer:
-                mess = el.pk
-            messages.success(request, f'Вы ответили на опрос. Ответы досупны по ID {mess}')
-            return redirect('list')
-    else:
-        form = AnswerForm()
-    context = {'form': form, 'title': 'Создать опрос'}
-    return render(request, 'interview/answer/answer_create.html', context)

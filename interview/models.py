@@ -1,7 +1,7 @@
 from datetime import date
 
 from django.db import models
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 from django.urls import reverse
 
 
@@ -50,8 +50,7 @@ class Question(models.Model):
         return str(self.title)
 
     def get_absolute_url(self):
-        # return reverse('q_detail', kwargs={'pk': self.category.pk, 'q_pk': self.pk})
-        return reverse('q_detail', kwargs={'pk': self.pk})
+        return reverse('q_detail', kwargs={'pk': self.category.pk, 'q_pk': self.pk})
 
 
 class Choice(models.Model):
@@ -64,7 +63,8 @@ class Choice(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE, blank=True, null=True, related_name='+')
 
     def get_absolute_url(self):
-        return reverse('choice_create', kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
+        return reverse('choice_detail', kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
+        # return reverse('choice_create', kwargs={'pk': self.pk})
 
     def __str__(self):
         return str(self.title)
@@ -76,6 +76,7 @@ class Answer(models.Model):
         verbose_name = 'Ответы пользователя'
         verbose_name_plural = 'Ответы пользователей'
 
+    owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer_text = models.TextField('Ответ Текстом', blank=True, null=True)
@@ -84,20 +85,7 @@ class Answer(models.Model):
     answer_multi = models.ManyToManyField(Choice, blank=True, related_name='answer_multi')
 
     def __str__(self):
-        return self.category
+        return self.pk
 
     def get_absolute_url(self):
         return reverse('answer_create', kwargs={'pk': self.pk})
-
-
-class Poll(models.Model):
-    """Модель для опроса"""
-    class Meta:
-        verbose_name_plural = 'Опросы пользователей'
-        verbose_name = 'Опрос пользователя'
-
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    answer = models.ManyToManyField(Answer, blank=True)
-
-    def __str__(self):
-        return self.pk

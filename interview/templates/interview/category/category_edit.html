@@ -13,7 +13,7 @@
                 {{ form|crispy }}
                 <input type="submit" class="btn btn-secondary my-3" value="Изменить">
             </form>
-            <a href="{% url 'q_create' %}" class="btn btn-secondary">Добавить вопрос</a>
+            <a href="{% url 'q_create' pk=category.pk %}" class="btn btn-secondary">Добавить вопрос</a>
         </div>
         <br>
         {% else %}

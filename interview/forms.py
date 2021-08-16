@@ -1,7 +1,7 @@
 from datetime import date
 
 from django import forms
-from .models import Category, Question, Choice, Answer, Poll
+from .models import Category, Question, Choice, Answer
 from django.contrib.auth.models import User
 
 
@@ -120,20 +120,11 @@ class AnswerForm(forms.ModelForm):
 
     class Meta:
         model = Answer
-        fields = ['category',
-                  'question',
-                  'answer_text',
-                  'answer_choice',
-                  'answer_multi'
-                  ]
-
-
-class PollForm(forms.ModelForm):
-    model = Poll
-    fields = [
-        'category',
-        'question',
-        'answer_text',
-        'answer_choice',
-        'answer_multi'
-      ]
+        fields = [
+            'owner',
+            'category',
+            'question',
+            'answer_text',
+            'answer_choice',
+            'answer_multi'
+        ]
