@@ -1,0 +1,15 @@
+{% extends 'interview/base.html' %}
+
+{% block title %}Удалить {{ object.title }}{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="container mb-2">
+        <h4 class="mb-2 text-center">Удалить вариант "{{ object.title }}"</h4>
+        {% include "forms/form_delete.html" %}
+    </div>
+    <a href="{{ question.get_absolute_url }}" class="btn btn-secondary">Вернуться</a>
+</div>
+<br>
+{% endblock %}

@@ -7,6 +7,7 @@ from django.urls import reverse
 
 class Category(models.Model):
     """Категория опросов"""
+
     class Meta:
         verbose_name = 'Опрос'
         verbose_name_plural = 'Опросы'
@@ -30,6 +31,7 @@ class Category(models.Model):
 
 class Question(models.Model):
     """Вопросы"""
+
     class Meta:
         verbose_name = 'Вопрос'
         verbose_name_plural = 'Вопросы'
@@ -58,6 +60,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     """Промежуточная модель для формирования вариантов ответов"""
+
     class Meta:
         verbose_name = 'Вариант ответа'
         verbose_name_plural = 'Варианты ответов'
@@ -66,8 +69,16 @@ class Choice(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE, blank=True, null=True, related_name='+')
 
     def get_absolute_url(self):
-        return reverse('choice_detail', kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
+        return reverse('choice_detail',
+                       kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
         # return reverse('choice_create', kwargs={'pk': self.pk})
+
+    def get_create_url(self):
+        return reverse('choice_create', kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk})
+
+    def get_delete_url(self):
+        return reverse('choice_delete',
+                       kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
 
     def __str__(self):
         return str(self.title)
@@ -75,6 +86,7 @@ class Choice(models.Model):
 
 class Answer(models.Model):
     """Модель для ответов пользователя"""
+
     class Meta:
         verbose_name = 'Ответы пользователя'
         verbose_name_plural = 'Ответы пользователей'

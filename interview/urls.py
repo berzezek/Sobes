@@ -15,11 +15,10 @@ from .views import (
     QuestionDeleteView,
 
     ChoiceCreateView,
-
+    ChoiceDeleteView,
 
     AnswerListView,
-    # AnswerCreateView,
-    get_name,
+    AnswerCreateView,
 )
 
 urlpatterns = [
@@ -35,14 +34,13 @@ urlpatterns = [
     path('question/<pk>/<q_pk>/delete/', QuestionDeleteView.as_view(), name='q_delete'),
     path('question/<pk>/<q_pk>/', QuestionDetailView.as_view(), name='q_detail'),
 
-    # path('answer/', AnswerListView.as_view(), name='answer_list'),
+    path('answer/', AnswerListView.as_view(), name='answer_list'),
     path('answer/search/', AnswerListView.as_view(), name='answer_search'),
-    path('answer/create/', get_name, name='answer_create'),
-    # path('answer/create/', AnswerCreateView.as_view(), name='answer_create'),
+    path('answer/create/', AnswerCreateView.as_view(), name='answer_create'),
 
-    path('interview/<pk>/<q_pk>/create/', ChoiceCreateView.as_view(), name='choice_create'),
+    path('choice/<pk>/<q_pk>/create/', ChoiceCreateView.as_view(), name='choice_create'),
+    path('choice/<pk>/<q_pk>/<c_pk>/delete/', ChoiceDeleteView.as_view(), name='choice_delete'),
 
     path('user/', LoginView.as_view(template_name='interview/user/user.html'), name='user'),
     path('exit/', LogoutView.as_view(template_name='interview/user/exit.html'), name='exit'),
-
 ]

@@ -102,9 +102,9 @@ class QuestionDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
         context['questions'] = Question.objects.filter(category=context['category']).filter(pk=self.kwargs['q_pk'])
-        # question = list(Question.objects.filter(category=context['questions']).filter(pk=self.kwargs['q_pk']).values())
-        # context['question'] = question[0]
-        # context['choice'] = Choice.objects.filter(question=context['questions'].first())
+        question = list(context['questions'].values())
+        context['question'] = question[0]
+        context['choice'] = Choice.objects.filter(question=context['questions'].first())
         return context
 
 
@@ -175,7 +175,6 @@ class ChoiceCreateView(CreateView):
     model = Choice
     template_name = 'interview/choice/choice_create.html'
     form_class = ChoiceForm
-    success_url = 'list'
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -183,9 +182,33 @@ class ChoiceCreateView(CreateView):
         context['question'] = Question.objects.filter(pk=self.kwargs['q_pk']).first()
         return context
 
+    def get_success_url(self):
+        return reverse('choice_create', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
+
     def form_valid(self, form):
         form.instance.question = Question.objects.filter(pk=self.kwargs['q_pk']).first()
         messages.success(self.request, f'Вариант ответа - добавлен')
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class ChoiceDeleteView(DeleteView):
+    model = Choice
+    template_name = 'interview/choice/choice_delete.html'
+    pk_url_kwarg = 'c_pk'
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        context['question'] = Question.objects.filter(category=context['category']).filter(pk=self.kwargs['q_pk']).first()
+        context['choice'] = Choice.objects.filter(question=context['question']).filter(pk=self.kwargs['c_pk']).first()
+        return context
+
+    def get_success_url(self):
+        return reverse('q_detail', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
+
+    def form_valid(self, form):
+        messages.success(self.request, f'Вопрос - удален')
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -200,38 +223,18 @@ class AnswerListView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        object_list = Answer.objects.filter(
-            Q(pk__icontains=query)
-        )
+        object_list = Answer.objects.filter(id=query)
         return object_list
 
 
-# class AnswerCreateView(CreateView):
-#     model = Answer
-#     form_class = AnswerForm
-#     template_name = 'interview/answer/answer_create.html'
-#     success_url = reverse_lazy('list')
-#
-#     def form_valid(self, form):
-#         messages.success(self.request, f'Опрос - пройден')
-#         super().form_valid(form)
-#         return HttpResponseRedirect(self.get_success_url())
+class AnswerCreateView(CreateView):
+    model = Answer
+    form_class = AnswerForm
+    template_name = 'interview/answer/answer_create.html'
+    success_url = reverse_lazy('list')
 
+    def form_valid(self, form):
+        messages.success(self.request, f'Опрос - пройден')
+        super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
-def get_name(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = AnswerForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('list')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = AnswerForm()
-
-    return render(request, 'interview/answer/answer_create.html', {'form': form})

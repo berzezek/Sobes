@@ -1,6 +1,6 @@
 {% extends 'interview/base.html' %}
 
-{% block title %}{{ question.title }}{% endblock %}
+{% block title %}{{ category }} - {{ question.title }}{% endblock %}
 
 {% block content %}
 <div class="container shadow p-5 rounded my-5">
@@ -9,6 +9,7 @@
         <h4 class="text-center my-2">Опрос: <a href="{{ category.get_absolute_url }}" class="btn btn-secondary">{{ category }}</a></h4>
         <hr class="mb-5">
         {% for el in questions %}
+
         <h5 class="my-3">Вопрос: {{ el.title }}</h5>
         {% if el.type == '1' %}
 
@@ -28,7 +29,15 @@
                 {% for c in choice %}
                 <ul class="ms-5">
                     <li>
-                        <p>{{ c.title }}</p>
+                        <div class="d-flex align-items-center">
+                            <div class="d-flex">
+                                <p>{{ c.title }}</p>
+                            </div>
+                            <div class="d-flex">
+                                <a href="{{ c.get_delete_url }}" class="text-danger ml-3"><p>&#215;</p></a>
+                            </div>
+
+                        </div>
                     </li>
                 </ul>
                 {% endfor %}

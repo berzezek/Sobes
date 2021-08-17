@@ -29,19 +29,22 @@
         </div>
 
         <div class="container">
-            <h5 class="ml-5 my-3">Вопросы</h5>
-            <p class="text-end text-muted ml-5 small">Количество вопросов: {{ count }}</p>
+
+                <span class="text-end ml-5 text-info">Количество вопросов: {{ count }}
+                    {% if user.is_authenticated %}
+                    {% if category.elapse >= 0 %}
+                        <a href="{% url 'q_create' pk=category.pk %}" class="text-success ml-2">+</a>
+                    {% endif %}
+                    {% endif %}
+                </span>
             <ul>
                 {% for q in questions %}
                 <li>
-                    <div class="container d-flex align-items-center">
+                    <div class="container d-flex align-items-center mt-2">
                         {% if user.is_authenticated %}
                         {% if category.elapse >= 0 %}
                         <div>
                             <a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.title }}</a>
-                        </div>
-                        <div>
-                            <a href="{% url 'q_create' pk=category.pk %}" class="text-success ml-2">+</a>
                         </div>
                         <div>
                             <a href="{% url 'q_update' pk=category.pk q_pk=q.pk %}" class="text-info ml-2">&#8635;</a>

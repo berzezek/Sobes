@@ -4,22 +4,25 @@
     <h4>Поиск ответов</h4>
 
     <form action="{% url 'answer_search' %}" method="get">
-        <input name="q" type="text" placeholder="Search...">
+        <input name="q" type="text" placeholder="Поиск...">
     </form>
 </div>
 <div class="container mt-5 shadow rounded p-5">
+    {% if object_list %}
     {%for el in object_list %}
     <ul>
         <li>
-            {{ el.owner }}
+            Отвечал: {{ el.owner }}
         </li>
         <li>
-            {{ el.category }}
+            Категория: {{ el.category }}
         </li>
         <li>
-            {{ el.question }}
+            Вопрос: {{ el.question }}
         </li>
+
         <hr>
+        Ответ:
         {% if el.question.type == '1' %}
         <li>
             {{ el.answer_text|default_if_none:"Пользователь не ответил" }}
@@ -36,4 +39,7 @@
     </ul>
 </div>
 {% endfor %}
+{% else %}
+<p>Введите номер ответа на опрос</p>
+{% endif %}
 {% endblock %}

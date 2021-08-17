@@ -11,9 +11,7 @@
 
         <form method="post">
             {% csrf_token %}
-            {% for el in '123' %}
             {{ form|crispy }}
-            {% endfor %}
             <input type="submit" class="btn btn-secondary my-3 shadow" value="Создать">
         </form>
 
