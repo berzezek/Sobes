@@ -3,11 +3,11 @@
 {% block title %}Обновить - {{ category.title }}{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
+<div class="container my-5 shadow rounded">
     <div class="container mb-2">
-        <h4 class="mb-2 text-center">Изменить опрос "{{ category.title }}"</h4>
+        <h4 class="mb-2 text-center">Изменить опрос <a href="{% url 'list' %}" class="btn btn-secondary">{{ category.title }}</a></h4>
         {% include "forms/form_edit.html" %}
     </div>
-    <a href="{% url 'list' %}" class="btn btn-secondary">Вернуться</a>
 </div>
+<br>
 {% endblock %}

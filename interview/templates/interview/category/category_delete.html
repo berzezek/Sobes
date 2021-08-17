@@ -5,10 +5,9 @@
 {% block content %}
 <div class="container mt-5">
     <div class="container mb-2">
-        <h4 class="mb-2 text-center">Удалить опрос "{{ category.title }}"</h4>
+        <h4 class="mb-2 text-center">Удалить опрос <a href="{% url 'list' %}" class="btn btn-secondary">{{ category.title }}</a></h4>
         {% include "forms/form_delete.html" %}
     </div>
-    <a href="{% url 'list' %}" class="btn btn-secondary">Вернуться</a>
 </div>
 <br>
 {% endblock %}

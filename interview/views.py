@@ -23,9 +23,10 @@ class CategoryListView(ListView):
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all().exclude(end_date__lte=date.today()).order_by('-end_date')
-        context['count'] = context['categories'].count()
-        context['title'] = 'Главная'
+        context['categories'] = Category.objects.all()
+        context['enable_interview'] = Category.objects.all().exclude(end_date__lte=date.today()).exclude(
+            start_date__gte=date.today())  # Доступны в данный период времени
+        context['count'] = context['enable_interview'].count()
         return context
 
 
@@ -46,7 +47,6 @@ class CategoryCreateView(CreateView, LoginRequiredMixin):
     model = Category
     template_name = 'interview/category/category_create.html'
     form_class = CategoryForm
-    success_url = reverse_lazy('list')
 
     def form_valid(self, form):
         messages.success(self.request, f'Опрос - создан')
@@ -55,7 +55,7 @@ class CategoryCreateView(CreateView, LoginRequiredMixin):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class CategoryUpdateView(UpdateView):
+class CategoryUpdateView(UpdateView, LoginRequiredMixin):
     model = Category
     template_name = 'interview/category/category_edit.html'
     form_class = CategoryForm
@@ -66,7 +66,7 @@ class CategoryUpdateView(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class CategoryDeleteView(DeleteView):
+class CategoryDeleteView(DeleteView, LoginRequiredMixin):
     model = Category
     template_name = 'interview/category/category_delete.html'
     success_url = reverse_lazy('list')
@@ -80,6 +80,19 @@ class CategoryDeleteView(DeleteView):
 """Вопросы"""
 
 
+class QuestionListView(ListView):
+    """Все Опросы"""
+    model = Question
+    template_name = 'interview/question/question_list.html'
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = Category.objects.filter(pk=self.kwargs['pk']).first()
+        context['questions'] = Question.objects.filter(category=category).values()
+        print(context['questions'].query)
+        return context
+
+
 class QuestionDetailView(DetailView):
     """Вопросы по категориям"""
     model = Category
@@ -87,11 +100,11 @@ class QuestionDetailView(DetailView):
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        category = Category.objects.filter(pk=self.kwargs['pk']).first()
-        context['questions'] = Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk'])
-        question = list(Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk']).values())
-        context['question'] = question[0]
-        context['choice'] = Choice.objects.filter(question=Question.objects.filter(category=category).filter(pk=self.kwargs['q_pk']).first())
+        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        context['questions'] = Question.objects.filter(category=context['category']).filter(pk=self.kwargs['q_pk'])
+        # question = list(Question.objects.filter(category=context['questions']).filter(pk=self.kwargs['q_pk']).values())
+        # context['question'] = question[0]
+        # context['choice'] = Choice.objects.filter(question=context['questions'].first())
         return context
 
 
@@ -99,7 +112,6 @@ class QuestionCreateView(CreateView):
     model = Question
     template_name = 'interview/question/question_create.html'
     form_class = QuestionForm
-    success_url = reverse_lazy('list')
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -108,23 +120,29 @@ class QuestionCreateView(CreateView):
 
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - добавлен')
+        form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
 
 
 class QuestionUpdateView(UpdateView):
     model = Question
     template_name = 'interview/question/question_edit.html'
     form_class = QuestionForm
+    pk_url_kwarg = 'q_pk'
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
-        # context['questions'] = Question.objects.filter(category=context['category']).filter(pk=self.kwargs['q_pk'])
+        context['questions'] = Question.objects.filter(category=context['category']).filter(pk=self.kwargs['q_pk'])
         return context
 
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - обновлен')
+        form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -132,17 +150,20 @@ class QuestionUpdateView(UpdateView):
 class QuestionDeleteView(DeleteView):
     model = Question
     template_name = 'interview/question/question_delete.html'
-    success_url = reverse_lazy('list')
+    pk_url_kwarg = 'q_pk'
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
-        context['question'] = Question.objects.filter(pk=self.kwargs['q_pk']).first()
+        context['question'] = Question.objects.filter(category=context['category']).filter(pk=self.kwargs['q_pk']).first()
         return context
+
+    def get_success_url(self):
+        return reverse('category_detail', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - удален')
-        # super().form_valid(form)
+        super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
 

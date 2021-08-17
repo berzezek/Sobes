@@ -52,6 +52,9 @@ class Question(models.Model):
     def get_absolute_url(self):
         return reverse('q_detail', kwargs={'pk': self.category.pk, 'q_pk': self.pk})
 
+    def get_delete_url(self):
+        return reverse('q_delete', kwargs={'pk': self.category.pk, 'q_pk': self.pk})
+
 
 class Choice(models.Model):
     """Промежуточная модель для формирования вариантов ответов"""

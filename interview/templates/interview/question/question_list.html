@@ -1,0 +1,11 @@
+{% extends 'interview/base.html' %}
+
+{% block title %}Добавить вопрос{% endblock %}
+
+{% block content %}
+{% for q in question %}
+{{ q.title }}
+{% endfor %}
+{{ questions }}
+{{ category }}
+{% endblock %}

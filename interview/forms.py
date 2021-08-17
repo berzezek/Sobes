@@ -16,7 +16,7 @@ class CategoryForm(forms.ModelForm):
         ]
 
     title = forms.CharField(
-        label='Название опроса',
+        label='Наименование опроса',
         required=True,
         widget=forms.TextInput(
             attrs={'class': 'form-control mb-3'}
@@ -54,22 +54,12 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
         fields = [
-            'category',
             'title',
             'type',
         ]
 
-    category = forms.ModelChoiceField(
-        queryset=Category.objects.all(),
-        label='Наименование опроса',
-        required=True,
-        widget=forms.Select(
-            attrs={'class': 'form-control mb-3'}
-        ),
-    )
-
     title = forms.CharField(
-        label='Название вопроса',
+        label='Наименование вопроса',
 
         required=True,
         widget=forms.TextInput(

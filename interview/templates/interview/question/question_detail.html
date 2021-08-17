@@ -6,7 +6,7 @@
 <div class="container shadow p-5 rounded my-5">
     {% if user.is_authenticated %}
     <div class="container">
-        <h4 class="text-center my-2">Опрос: {{ category }}</h4>
+        <h4 class="text-center my-2">Опрос: <a href="{{ category.get_absolute_url }}" class="btn btn-secondary">{{ category }}</a></h4>
         <hr class="mb-5">
         {% for el in questions %}
         <h5 class="my-3">Вопрос: {{ el.title }}</h5>
@@ -35,23 +35,15 @@
                 <a href="{% url 'choice_create' pk=category.pk q_pk=el.pk %}" class="btn btn-success ml-2">Добавить
                     вариант ответа</a>
             </div>
-
-            {% endif %}
         </div>
-    </div>
-    <hr class="mt-5">
-    <div class="d-flex mt-5 justify-content-end">
-        <a href="{{ category.get_absolute_url }}" class="btn btn-secondary mx-2">Венуться к опросу</a>
-        <a href="{% url 'q_delete' pk=category.pk q_pk=el.pk %}" class="btn btn-danger mx-2">Удалить вопрос</a>
-        <a href="{% url 'q_create' pk=category.pk %}" class="btn btn-success mx-2">Добавить вопрос</a>
-        <a href="{% url 'q_update' pk=category.pk q_pk=el.pk %}" class="btn btn-info mx-2">Изменить вопрос</a>
+
+        {% endif %}
         {% endfor %}
+
+        {% else %}
+        <p>Для редактирования вам нужно <a href="{% url 'user' %}">авторизоваться</a></p>
+        <a href="{{ object.category }}" class="btn btn-secondary mt-5">Венуться к опросу</a>
+        {% endif %}
     </div>
-    {% else %}
-    <p>Для редактирования вам нужно <a href="{% url 'user' %}">авторизоваться</a></p>
-    <a href="{{ object.category }}" class="btn btn-secondary mt-5">Венуться к опросу</a>
-    {% endif %}
-</div>
-<br>
-<br>
-{% endblock %}
+    <br>
+    {% endblock %}

@@ -1,33 +1,51 @@
 {% extends 'interview/base.html' %}
 {% load static %}
 
-{% block title %}{{ title }}{% endblock %}
+{% block title %}Главная{% endblock %}
 
 {% block content %}
 
 <div class="container my-5">
     <h3 class="text-center">Опросы</h3>
+    <div class="d-flex justify-content-end mb-3">
+        <p class="text-end text-muted mr-5">Количество доступных опросов - {{ count }}</p>
+    </div>
     {% if user.is_authenticated %}
-    <div class="d-flex justify-content-end mb-3">
-        <a href="{% url 'category_create' %}" class="btn btn-secondary shadow">Создать опрос</a>
-    </div>
-    {% endif %}
-    <div class="d-flex justify-content-end mb-3">
-        <p class="text-end text-muted me-5">Количество доступных опросов - {{ count }}</p>
-    </div>
+    <a href="{% url 'category_create' %}" class="btn btn-success shadow ml-5">Создать новый опрос</a>
     {% for el in categories %}
-    <div class="shadow p-3 rounded mb-3">
+    <div class="shadow p-3 rounded my-3">
         <div class="container p-3">
-            <h4>{{ el.title }}</h4>
-            <p class="ms-2 text-muted">{{ el.description }}</p>
-            <p class="small text-muted"> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
+            <h4 class="display-6">Опрос: {{ el.title }}</h4>
+            <p class="text-muted">Описание: {{ el.description }}</p>
+            <p class=""> Дата старта: {{ el.start_date|default_if_none:"Не определена" }}</p>
+            <p class="small text-muted">До начала опрос недоступен для пользователей, также вы не можете редактировать
+                опрос после начала</p>
+            <p class=""> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
+            <p class="small text-muted">После опрос недоступен для пользователей</p>
             <div class="d-flex justify-content-end">
                 <a href="{{ el.get_absolute_url }}"
-                   class="btn btn-info shadow">Подробнее</a>
+                   class="btn btn-info shadow mr-5">Подробнее</a>
             </div>
         </div>
     </div>
     {% endfor %}
+    {% else %}
+    {% for el in enable_interview %}
+    <div class="shadow p-3 rounded mb-3">
+        <div class="container p-3">
+            <h4 class="display-6">Опрос: {{ el.title }}</h4>
+            <p class="text-muted">Описание: {{ el.description }}</p>
+            <p class="small text-muted"> Дата старта: {{ el.start_date }}</p>
+            <p class="small text-muted"> Дата окончания: {{ el.end_date }}</p>
+            <div class="d-flex justify-content-end">
+                <a href="{{ el.get_absolute_url }}"
+                   class="btn btn-info shadow mr-5">Подробнее</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
 </div>
 <br>
 <br>

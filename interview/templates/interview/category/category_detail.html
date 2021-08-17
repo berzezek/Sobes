@@ -6,7 +6,27 @@
 
 <div class="container">
     <div class="shadow rounded p-3 my-5">
-        <h3 class="text-center my-3 display-6">{{ category.title }}</h3>
+        <div class="d-flex align-items-center justify-content-center">
+            <div>
+                <h4 class="text-center my-3 mr-3">Опрос: {{ category.title }}</h4>
+            </div>
+            {% if user.is_authenticated %}
+            <div>
+                <a href="{% url 'category_create' %}" class="text-success ml-2">+</a>
+            </div>
+            {% if category.elapse >= 0 %}
+            <div>
+                <a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.title }}</a>
+            </div>
+            <div>
+                <a href="{% url 'category_update' pk=category.pk %}" class="text-info ml-2">&#8635;</a>
+            </div>
+            <div>
+                <a href="{% url 'category_delete' pk=category.pk %}" class="text-danger ml-2">&#215;</a>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
 
         <div class="container">
             <h5 class="ml-5 my-3">Вопросы</h5>
@@ -14,11 +34,25 @@
             <ul>
                 {% for q in questions %}
                 <li>
-                    <div class="container">
+                    <div class="container d-flex align-items-center">
                         {% if user.is_authenticated %}
-                        <a href="{{ q.get_absolute_url }}" class="text-decoration-none"><p>{{ q.title }}</p></a>
+                        {% if category.elapse >= 0 %}
+                        <div>
+                            <a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.title }}</a>
+                        </div>
+                        <div>
+                            <a href="{% url 'q_create' pk=category.pk %}" class="text-success ml-2">+</a>
+                        </div>
+                        <div>
+                            <a href="{% url 'q_update' pk=category.pk q_pk=q.pk %}" class="text-info ml-2">&#8635;</a>
+                        </div>
+                        <div>
+                            <a href="{{ q.get_delete_url }}" class="text-danger ml-2">&#215;</a>
+                        </div>
+
                         {% else %}
                         <p>{{ q.title }}</p>
+                        {% endif %}
                         {% endif %}
                     </div>
                 </li>
@@ -33,41 +67,25 @@
             <div>
                 <ul class="mr-2">
                     <li class="">
-                        <p>Описание: {{ category.description }}</p>
+                        Описание: {{ category.description }}
                     </li>
                     <li class="my-1">
-                        <p>Автор: {{ category.owner }}</p>
+                        Автор: {{ category.owner }}
                     </li>
                     <li class="">
-                        <p>Дата начала: {{ category.start_date|default_if_none:"Не определена" }}</p>
+                        Дата начала: {{ category.start_date|default_if_none:"Не определена" }}
                         {% if user.is_authenticated %}
                         <p class="small">* После начала опроса Вы не сможете его изменить</p>
                         {% endif %}
                     </li>
                     <li class="mb-3">
-                        <p>Дата окончания: {{ category.end_date|default_if_none:"Не определена" }}</p>
+                        Дата окончания: {{ category.end_date|default_if_none:"Не определена" }}
                     </li>
-                    <div class="btn-group-vertical">
-                        {% if user.is_authenticated %}
-                        {% if category.elapse >= 0 %}
-                        <span class="mb-3"><a href="{% url 'category_update' pk=category.pk %}">
-                            <button type="button" class="btn btn-info shadow">Изменить</button>
-                        </a>
-                        <a href="{% url 'category_delete' pk=category.pk %}" class="my-2">
-                            <button type="button" class="btn btn-danger shadow">Удалить</button>
-                        </a></span>
-                        <a href="{% url 'q_create' pk=category.pk %}" class="btn btn-secondary shadow">Добавить вопрос</a>
-                        {% else %}
-                        <p>Опрос начался</p>
-                        {% endif %}
-                        {% endif %}
-                    </div>
                 </ul>
             </div>
         </div>
     </div>
 </div>
-<br>
 <br>
 
 {% endblock %}
