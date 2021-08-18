@@ -43,7 +43,7 @@ class CategoryDetailView(DetailView):
         return context
 
 
-class CategoryCreateView(CreateView, LoginRequiredMixin):
+class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = Category
     template_name = 'interview/category/category_create.html'
     form_class = CategoryForm
@@ -55,7 +55,7 @@ class CategoryCreateView(CreateView, LoginRequiredMixin):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class CategoryUpdateView(UpdateView, LoginRequiredMixin):
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = Category
     template_name = 'interview/category/category_edit.html'
     form_class = CategoryForm
@@ -66,7 +66,7 @@ class CategoryUpdateView(UpdateView, LoginRequiredMixin):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class CategoryDeleteView(DeleteView, LoginRequiredMixin):
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
     model = Category
     template_name = 'interview/category/category_delete.html'
     success_url = reverse_lazy('list')
@@ -118,14 +118,14 @@ class QuestionCreateView(CreateView):
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
         return context
 
+    def get_success_url(self):
+        return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
+
     def form_valid(self, form):
         messages.success(self.request, f'Вопрос - добавлен')
         form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
-
-    def get_success_url(self):
-        return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
 
 
 class QuestionUpdateView(UpdateView):
@@ -145,6 +145,13 @@ class QuestionUpdateView(UpdateView):
         form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):  # Переадресация по "question.type"
+        if Question.objects.filter(category=Category.objects.filter(pk=self.kwargs['pk']).first()).filter(pk=self.kwargs['q_pk']).exclude(type='1'):
+            return reverse('choice_create', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
+        else:
+            return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
+
 
 
 class QuestionDeleteView(DeleteView):

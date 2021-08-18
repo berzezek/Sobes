@@ -15,17 +15,13 @@
     {% for el in categories %}
     <div class="shadow p-3 rounded my-3">
         <div class="container p-3">
-            <h4 class="display-6">Опрос: {{ el.title }}</h4>
+            <a href="{{ el.get_absolute_url }}" class="btn btn-info shadow mr-5 mb-3">Опрос: {{ el.title }}</a>
             <p class="text-muted">Описание: {{ el.description }}</p>
-            <p class=""> Дата старта: {{ el.start_date|default_if_none:"Не определена" }}</p>
+            <p class="">Дата старта: {{ el.start_date|default_if_none:"Не определена" }}</p>
             <p class="small text-muted">До начала опрос недоступен для пользователей, также вы не можете редактировать
-                опрос после начала</p>
+                опрос после начала.</p>
             <p class=""> Дата окончания: {{ el.end_date|default_if_none:"Не определена" }}</p>
-            <p class="small text-muted">После опрос недоступен для пользователей</p>
-            <div class="d-flex justify-content-end">
-                <a href="{{ el.get_absolute_url }}"
-                   class="btn btn-info shadow mr-5">Подробнее</a>
-            </div>
+            <p class="small text-muted">После опрос недоступен для пользователей.</p>
         </div>
     </div>
     {% endfor %}
@@ -33,14 +29,7 @@
     {% for el in enable_interview %}
     <div class="shadow p-3 rounded mb-3">
         <div class="container p-3">
-            <h4 class="display-6">Опрос: {{ el.title }}</h4>
-            <p class="text-muted">Описание: {{ el.description }}</p>
-            <p class="small text-muted"> Дата старта: {{ el.start_date }}</p>
-            <p class="small text-muted"> Дата окончания: {{ el.end_date }}</p>
-            <div class="d-flex justify-content-end">
-                <a href="{{ el.get_absolute_url }}"
-                   class="btn btn-info shadow mr-5">Подробнее</a>
-            </div>
+            <a href="{{ el.get_absolute_url }}" class="btn btn-info shadow mr-5">Опрос: {{ el.title }}</a>
         </div>
     </div>
     {% endfor %}

@@ -12,6 +12,7 @@ class Category(models.Model):
         verbose_name = 'Опрос'
         verbose_name_plural = 'Опросы'
         ordering = ['-start_date']
+        permissions = [("elapse_date", "Опрос - начался!")]
 
     owner = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
     title = models.CharField('Наименование опроса', max_length=150, unique=True)
@@ -27,6 +28,11 @@ class Category(models.Model):
 
     def elapse(self):
         return (self.start_date - date.today()).days
+
+    def elapse_date(self):
+        if (self.start_date - date.today()).days >= 0:
+            return True
+        return False
 
 
 class Question(models.Model):

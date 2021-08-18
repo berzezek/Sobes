@@ -1,23 +1,37 @@
 {% extends 'interview/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Добавить вариант{% endblock %}
+{% block title %}Добавить вариант {{ category }} - {{ question }}{% endblock %}
 
 {% block content %}
 
-<div class="container shadow rounded p-5">
+<div class="container shadow rounded p-5 my-5">
     <div class="container mb-2">
-        <h4 class="text-center">Добавить вариант</h4>
-        <p class="ml-5">Опрос: {{ category }}, Вопрос: {{ question }}</p>
+        <h4 class="text-center">Добавить вариант к опросу:
+            <a href="{% url 'category_detail' pk=category.pk %}" class="btn btn-secondary ml-3 shadow">
+                {{ category }}
+            </a>
+            на вопрос:
+            <a href="{% url 'q_detail' pk=category.pk q_pk=question.pk %}" class="btn btn-secondary ml-3 shadow">
+                {{ question }}
+            </a>
+        </h4>
 
         <form method="post">
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" class="btn btn-secondary my-3 shadow" value="Создать">
+            <div class="d-flex">
+                <div>
+                    <input type="submit" class="btn btn-secondary shadow text-success" value="+">
+                </div>
+                <div>
+                    <a href="{% url 'q_create' pk=category.pk %}" class="btn btn-secondary ml-3 shadow">Добавить другой
+                        вопрос</a>
+                </div>
+            </div>
         </form>
 
     </div>
-    <a href="{% url 'q_detail' pk=category.pk q_pk=question.pk %}" class="btn btn-secondary ml-3 shadow">Вернуться к
-        вопросу</a>
+
 </div>
 <br>
 
