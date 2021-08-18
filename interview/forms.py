@@ -85,19 +85,8 @@ class QuestionForm(forms.ModelForm):
 class ChoiceForm(forms.ModelForm):
     class Meta:
         model = Choice
-        fields = [
-            # 'question',
-            'title'
-        ]
+        fields = ['title']
 
-    # question = forms.ModelChoiceField(
-    #     queryset=Question.objects.all(),
-    #     label='Наименование вопроса',
-    #     required=False,
-    #     widget=forms.Select(
-    #         attrs={'class': 'form-control mb-3'}
-    #     ),
-    # )
     title = forms.CharField(
         label='Вариант',
         required=False,
@@ -105,7 +94,6 @@ class ChoiceForm(forms.ModelForm):
             attrs={'class': 'form-control mb-3'}
         )
     )
-
 
 
 class AnswerForm(forms.ModelForm):
@@ -120,11 +108,38 @@ class AnswerForm(forms.ModelForm):
             'answer_choice',
             'answer_multi'
         ]
-    #
-    # question = forms.CharField(
-    #     label='Вопрос',
-    #     required=True,
-    #     widget=forms.TextInput(
-    #         attrs={'class': 'form-control mb-3'}
-    #     )
-    # )
+
+    question = forms.ModelChoiceField(
+        queryset=Question.objects.all(),
+        label='Вопрос',
+        required=True,
+        widget=forms.Select(
+            attrs={'class': 'form-control mb-3'}
+        )
+    )
+
+    answer_text = forms.CharField(
+        label='Ответ текстом',
+        required=False,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control mb-3'}
+        )
+    )
+
+    answer_choice = forms.ModelChoiceField(
+        queryset=Answer.objects.all(),
+        label='Выбор',
+        required=False,
+        widget=forms.Select(
+            attrs={'class': 'form-control mb-3'}
+        )
+    )
+
+    answer_multi = forms.ModelMultipleChoiceField(
+        queryset=Answer.objects.all(),
+        label='Опция',
+        required=False,
+        widget=forms.SelectMultiple(
+            attrs={'class': 'form-control mb-3'}
+        )
+    )

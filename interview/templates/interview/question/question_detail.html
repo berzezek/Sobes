@@ -40,11 +40,11 @@
         <div class="d-flex mt-2 align-items-center">
             {% if el.type != '1' %}
             <div>
-                <p class="ms-3 text-muted">Варианты ответов:</p>
+                <p class="ml-3 text-muted">Варианты ответов:</p>
             </div>
             <div>
                 {% for c in choice %}
-                <ul class="ms-5">
+                <ul class="">
                     <li>
                         <div class="d-flex align-items-center">
                             <div class="d-flex">
@@ -53,7 +53,6 @@
                             <div class="d-flex">
                                 <a href="{{ c.get_delete_url }}" class="text-danger ml-3"><p>&#215;</p></a>
                             </div>
-
                         </div>
                     </li>
                 </ul>
