@@ -132,7 +132,7 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
         return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
-        if Category.elapse_date:
+        if not Category.elapse_date:
             messages.error(self.request, f'Опрос начался!')
         else:
             messages.success(self.request, f'Вопрос - добавлен')
@@ -154,7 +154,7 @@ class QuestionUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        if Category.elapse_date:
+        if not Category.elapse_date:
             messages.error(self.request, f'Опрос начался!')
         else:
             messages.success(self.request, f'Вопрос - обновлен')
@@ -163,7 +163,7 @@ class QuestionUpdateView(LoginRequiredMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):  # Переадресация по "question.type"
-        if Category.elapse_date:
+        if not Category.elapse_date:
             return reverse('list')
         if Question.objects.filter(category=Category.objects.filter(pk=self.kwargs['pk']).first()).filter(
                 pk=self.kwargs['q_pk']).exclude(type='1'):
@@ -185,12 +185,12 @@ class QuestionDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
     def get_success_url(self):
-        if Category.elapse_date:
+        if not Category.elapse_date:
             return reverse('list')
         return reverse('category_detail', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
-        if Category.elapse_date:
+        if not Category.elapse_date:
             messages.error(self.request, f'Опрос начался!')
         else:
             messages.success(self.request, f'Вопрос - удален')
@@ -215,12 +215,12 @@ class ChoiceCreateView(LoginRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
-        if Category.elapse_date:
+        if not Category.elapse_date:
             return reverse('list')
         return reverse('choice_create', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
 
     def form_valid(self, form):
-        if Category.elapse_date:
+        if not Category.elapse_date:
             messages.error(self.request, f'Опрос начался!')
         else:
             form.instance.question = Question.objects.filter(pk=self.kwargs['q_pk']).first()
@@ -246,7 +246,7 @@ class ChoiceDeleteView(LoginRequiredMixin, DeleteView):
         return reverse('q_detail', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
 
     def form_valid(self, form):
-        if Category.elapse_date:
+        if not Category.elapse_date:
             messages.error(self.request, f'Опрос начался!')
         else:
             messages.success(self.request, f'Вопрос - удален')
