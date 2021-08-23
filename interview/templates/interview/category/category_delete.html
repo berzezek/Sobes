@@ -3,11 +3,10 @@
 {% block title %}Удалить - {{ category.title }}{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="container mb-2">
-        <h4 class="mb-2 text-center">Удалить опрос <a href="{% url 'list' %}" class="btn btn-secondary">{{ category.title }}</a></h4>
-        {% include "forms/form_delete.html" %}
-    </div>
+<div class="container justify-content-center shadow rounded p-5 mt-5">
+    <h4 class="mb-2 text-center">Удалить опрос <a href="{% url 'list' %}" class="btn btn-secondary">{{ category.title
+        }}</a></h4>
+    {% include "forms/form_delete.html" %}
 </div>
 <br>
 {% endblock %}

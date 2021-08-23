@@ -19,6 +19,7 @@ from .views import (
 
     AnswerListView,
     AnswerCreateView,
+
 )
 
 urlpatterns = [
@@ -36,7 +37,7 @@ urlpatterns = [
 
     path('answer/', AnswerListView.as_view(), name='answer_list'),
     path('answer/search/', AnswerListView.as_view(), name='answer_search'),
-    path('answer/create/', AnswerCreateView.as_view(), name='answer_create'),
+    path('answer/<pk>/create/', AnswerCreateView.as_view(), name='answer_create'),
 
     path('choice/<pk>/<q_pk>/create/', ChoiceCreateView.as_view(), name='choice_create'),
     path('choice/<pk>/<q_pk>/<c_pk>/delete/', ChoiceDeleteView.as_view(), name='choice_delete'),

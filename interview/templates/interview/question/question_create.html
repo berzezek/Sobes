@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="container shadow rounded p-5 my-3">
+<div class="container justify-content-center shadow rounded p-5 mt-5">
     <h4 class="text-center">Добавить вопрос к опросу: <a href="{{ category.get_absolute_url }}"
                                                          class="btn btn-secondary mb-2">{{ category.title }}</a></h4>
     {% include "forms/form_add.html" %}

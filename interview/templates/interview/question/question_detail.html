@@ -3,7 +3,7 @@
 {% block title %}{{ category }} - {{ question.title }}{% endblock %}
 
 {% block content %}
-<div class="container shadow p-5 rounded my-5">
+<div class="container justify-content-center shadow rounded p-5 mt-5">
     {% if user.is_authenticated %}
     <div class="container">
         <h4 class="text-center my-2">Опрос: <a href="{{ category.get_absolute_url }}"

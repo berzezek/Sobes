@@ -4,11 +4,9 @@
 
 {% block content %}
 
-<div class="container mt-5">
-    <div class="container mb-2">
-        <h4 class="mb-2 text-center">Удалить вопрос "{{ question }}"</h4>
-        {% include "forms/form_delete.html" %}
-    </div>
+<div class="container justify-content-center shadow rounded p-5 mt-5">
+    <h4 class="mb-2 text-center">Удалить вопрос "{{ question }}"</h4>
+    {% include "forms/form_delete.html" %}
     <a href="{{ category.get_absolute_url }}" class="btn btn-secondary">Вернуться</a>
 </div>
 <br>

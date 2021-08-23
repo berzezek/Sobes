@@ -25,7 +25,11 @@
 {% if messages %}
     <div class="container my-1">
         {% for mess in messages %}
-        <div class="alert alert-success text-center">{{ mess }}</div>
+        {% if mess.tags == 'success' %}
+        <div class="container w-50 alert alert-success text-center">{{ mess }}</div>
+        {% elif mess.tags == 'error' %}
+        <div class="container w-50 alert alert-danger text-center">{{ mess }}</div>
+        {% endif %}
         {% endfor %}
     </div>
 {% endif %}

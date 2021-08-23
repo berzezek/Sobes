@@ -3,11 +3,10 @@
 {% block title %}Обновить - {{ object.title }}{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="container mb-2">
-        <h4 class="mb-2 text-center">Изменить вопрос <a href="{% url 'category_detail' pk=category.pk %}" class="btn btn-secondary ml-3">{{ object.title }}</a></h4>
-        {% include "forms/form_edit.html" %}
-    </div>
+<div class="container justify-content-center shadow rounded p-5 mt-5">
+    <h4 class="mb-2 text-center">Изменить вопрос <a href="{% url 'category_detail' pk=category.pk %}"
+                                                    class="btn btn-secondary ml-3">{{ object.title }}</a></h4>
+    {% include "forms/form_edit.html" %}
 </div>
 <br>
 {% endblock %}

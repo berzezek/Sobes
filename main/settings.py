@@ -116,6 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 CRISPY_TEMPLATE_PACK = 'uni_form'
 LOGIN_REDIRECT_URL = 'list'
 LOGOUT_REDIRECT_URL = 'user'
+LOGIN_URL = 'user'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

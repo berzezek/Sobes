@@ -4,35 +4,33 @@
 
 {% block content %}
 
-<div class="container">
-    <div class="shadow rounded p-3 my-5">
-        <div class="d-flex align-items-center justify-content-center">
-            <div>
-                <h4 class="text-center my-3 mr-3">Опрос: {{ category.title }}</h4>
-            </div>
-            {% if user.is_authenticated %}
-            <div>
-                <a href="{% url 'category_create' %}" class="text-success ml-2">+</a>
-            </div>
-            {% if category.elapse >= 0 %}
-            <div>
-                <a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.title }}</a>
-            </div>
-            <div>
-                <a href="{% url 'category_update' pk=category.pk %}" class="text-info ml-2">&#8635;</a>
-            </div>
-            <div>
-                <a href="{% url 'category_delete' pk=category.pk %}" class="text-danger ml-2">&#215;</a>
-            </div>
-            {% endif %}
-            {% endif %}
+<div class="container justify-content-center shadow rounded p-3 mt-5">
+    <div class="d-flex align-items-center justify-content-center">
+        <div>
+            <h4 class="text-center my-3 mr-3">Опрос: {{ category.title }}</h4>
         </div>
+        {% if user.is_authenticated %}
+        <div>
+            <a href="{% url 'category_create' %}" class="text-success ml-2">+</a>
+        </div>
+        {% if category.elapse_date %}
+        <div>
+            <a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.title }}</a>
+        </div>
+        <div>
+            <a href="{% url 'category_update' pk=category.pk %}" class="text-info ml-2">&#8635;</a>
+        </div>
+        <div>
+            <a href="{% url 'category_delete' pk=category.pk %}" class="text-danger ml-2">&#215;</a>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
 
         <div class="container">
-
                 <span class="text-end ml-5 text-info">Количество вопросов: {{ count }}
                     {% if user.is_authenticated %}
-                    {% if category.elapse >= 0 %}
+                    {% if category.elapse_date %}
                         <a href="{% url 'q_create' pk=category.pk %}" class="text-success ml-2">+</a>
                     {% endif %}
                     {% endif %}
@@ -42,7 +40,7 @@
                 <li>
                     <div class="container d-flex align-items-center mt-2">
                         {% if user.is_authenticated %}
-                        {% if category.elapse >= 0 %}
+                        {% if category.elapse_date %}
                         <div>
                             <a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.title }}</a>
                         </div>
@@ -63,9 +61,10 @@
                 {% endfor %}
 
             </ul>
-            <a href="{% url 'answer_create' %}" class="btn btn-info my-2 shadow">Пройти опрос</a>
+            <a href="{% url 'answer_create' pk=category.pk %}" class="btn btn-info my-2 shadow">Пройти опрос</a>
             <a href="{% url 'list' %}" class="btn btn-secondary my-2 ml-2 shadow">Вернуться</a>
         </div>
+
         <div class="d-flex justify-content-end container text-muted">
             <div>
                 <ul class="mr-2">
@@ -77,8 +76,8 @@
                     </li>
                     <li class="">
                         Дата начала: {{ category.start_date|default_if_none:"Не определена" }}
-                        {% if user.is_authenticated %}
-                        <p class="small">* После начала опроса Вы не сможете его изменить</p>
+                        {% if not category.elapse_date %}
+                        <span class="small text-danger">* Вы не можете изменить опрос, т.к. он уже начался!</span>
                         {% endif %}
                     </li>
                     <li class="mb-3">
@@ -87,8 +86,10 @@
                 </ul>
             </div>
         </div>
-    </div>
+
 </div>
+<br>
+<br>
 <br>
 
 {% endblock %}

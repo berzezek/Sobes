@@ -3,13 +3,20 @@
 {% block title %}Прохождение опроса{% endblock %}
 
 {% block content %}
+
 <div class="container mb-5">
-    <h4 class="my-5 text-center">Добавить ответ</h4>
+    <h4 class="my-5 text-center">Опрос: {{ category }}</h4>
+
     <form method="post">
+        {% for el in questions %}
+        <p>Вопрос: {{ el.title }} <span>Ответ должен быть {{ el.get_type_display }} </span></p>
         {% csrf_token %}
         {{ form|crispy }}
-        <input type="submit" class="btn btn-secondary my-3" value="Пройти">
+        {% endfor %}
+        <input type="submit" class="btn btn-secondary my-3" value="Ответить">
+
     </form>
+
 </div>
 <br>
 {% endblock %}

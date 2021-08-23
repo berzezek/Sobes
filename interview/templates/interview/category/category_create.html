@@ -4,11 +4,29 @@
 
 {% block content %}
 
-<div class="container mb-5">
-    <div class="container mb-2">
-        <h4 class="my-5 text-center">Создать опрос</h4>
-        {% include "forms/form_add.html" %}
+    <div class="container justify-content-center shadow rounded p-5 mt-5">
+        <h4 class="text-center">Создать опрос</h4>
+        <form method="post" class="">
+            {% csrf_token %}
+            <span>Наименование опроса*</span>
+            {{ form.title }}
+            <span>Описание опроса*</span>
+            {{ form.description }}
+            <div class="d-flex justify-content-around">
+                <div>
+                    <span>Начало опроса</span>
+                    {{ form.start_date }}
+                </div>
+                <div>
+                    <span>Окончание опроса</span>
+                    {{ form.end_date }}
+                </div>
+
+            </div>
+
+            <input type="submit" class="btn btn-secondary my-3 shadow" value="Создать">
+        </form>
     </div>
-</div>
+
 <br>
 {% endblock %}

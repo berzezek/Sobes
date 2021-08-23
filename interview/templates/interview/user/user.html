@@ -9,14 +9,14 @@
     display: block;
     width: 98%;
     padding: 1%;
-    margin-top: 20px;
+    margin-top: 10px;
     border: solid silver;
     border-radius: 5px;
    }
 </style>
 
-<div class="container mb-5">
-    <h4 class="my-5 text-center">Авторизация</h4>
+<div class="container mb-5 w-50">
+    <p class="mt-5 text-center">Авторизация</p>
     <form method="post" class="form-registry">
         {% csrf_token %}
         {{ form.as_p }}

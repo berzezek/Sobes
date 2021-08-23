@@ -7,7 +7,6 @@ from django.urls import reverse
 
 class Category(models.Model):
     """Категория опросов"""
-
     class Meta:
         verbose_name = 'Опрос'
         verbose_name_plural = 'Опросы'
@@ -26,18 +25,15 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('category_detail', kwargs={'pk': self.pk})
 
-    def elapse(self):
-        return (self.start_date - date.today()).days
-
     def elapse_date(self):
-        if (self.start_date - date.today()).days >= 0:
-            return True
-        return False
+        if self.start_date:
+            if (self.start_date - date.today()).days < 0:
+                return False
+        return True
 
 
 class Question(models.Model):
     """Вопросы"""
-
     class Meta:
         verbose_name = 'Вопрос'
         verbose_name_plural = 'Вопросы'
@@ -66,7 +62,6 @@ class Question(models.Model):
 
 class Choice(models.Model):
     """Промежуточная модель для формирования вариантов ответов"""
-
     class Meta:
         verbose_name = 'Вариант ответа'
         verbose_name_plural = 'Варианты ответов'
@@ -92,7 +87,6 @@ class Choice(models.Model):
 
 class Answer(models.Model):
     """Модель для ответов пользователя"""
-
     class Meta:
         verbose_name = 'Ответы пользователя'
         verbose_name_plural = 'Ответы пользователей'
@@ -104,6 +98,9 @@ class Answer(models.Model):
     answer_choice = models.ForeignKey(Choice, on_delete=models.CASCADE, blank=True, null=True,
                                       related_name='answer_choice')
     answer_multi = models.ManyToManyField(Choice, blank=True, related_name='answer_multi')
+
+    def get_create_url(self):
+        return reverse('answer_create', kwargs={'pk': self.category.pk})
 
     def __str__(self):
         return str(self.pk)

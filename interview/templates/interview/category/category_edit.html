@@ -3,11 +3,37 @@
 {% block title %}Обновить - {{ category.title }}{% endblock %}
 
 {% block content %}
-<div class="container my-5 shadow rounded">
-    <div class="container mb-2">
-        <h4 class="mb-2 text-center">Изменить опрос <a href="{% url 'list' %}" class="btn btn-secondary">{{ category.title }}</a></h4>
-        {% include "forms/form_edit.html" %}
-    </div>
+{% if user.is_authenticated %}
+{% if category.elapse_date %}
+<div class="container justify-content-center shadow rounded p-5 mt-5">
+    <h4 class="mb-2 text-center">Изменить опрос <a href="{% url 'list' %}" class="btn btn-secondary">
+        {{ category.title }}</a></h4>
+    <form method="post" class="">
+        {% csrf_token %}
+        <span>Наименование опроса*</span>
+        {{ form.title }}
+        <span>Описание опроса*</span>
+        {{ form.description }}
+        <div class="d-flex justify-content-around">
+            <div>
+                <span>Начало опроса</span>
+                {{ form.start_date }}
+            </div>
+            <div>
+                <span>Окончание опроса</span>
+                {{ form.end_date }}
+            </div>
+
+        </div>
+
+        <input type="submit" class="btn btn-secondary my-3 shadow" value="Изменить">
+    </form>
+    {% else %}
+        <p class="text-danger text-center mt-5">Вы не можете изменить опрос после {{ category.start_date }}</p>
+    {% endif %}
+    {% else %}
+        {% include "forms/login.html" %}
+    {% endif %}
 </div>
 <br>
 {% endblock %}

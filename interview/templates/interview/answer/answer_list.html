@@ -7,7 +7,7 @@
         <p class="text-end">id ответа: {{ el.id }}</p>
         <p>Категория: {{ el.category }}</p>
         <p>Вопрос: {{ el.question }}</p>
-        <p>Вариант ответа: {{ el.question.get_type_display }}</p>
+        <p>Вариант ответа: {{ el.get_type_display }}</p>
         <p>Ответ:</p>
         <p class="ms-5">
             {% if el.answer_text %}

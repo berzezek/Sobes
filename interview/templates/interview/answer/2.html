@@ -5,6 +5,8 @@
 {% block content %}
 
 <div class="container shadow rounded p-5 my-5">
+    {{ choice }}
+    {{ question }}
     <div class="container mb-2">
         <h4 class="text-center">Добавить вариант к опросу:
             <a href="{% url 'category_detail' pk=category.pk %}" class="btn btn-secondary ml-3 shadow">
