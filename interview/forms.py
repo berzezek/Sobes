@@ -1,10 +1,9 @@
 from datetime import date
 
 from django import forms
-from .models import Category, Question, Choice, Answer
-from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.forms import modelformset_factory, BaseModelFormSet
 
+from .models import Category, Question, Choice, Answer, AnswerNumber
 
 
 class CategoryForm(forms.ModelForm):
@@ -85,7 +84,6 @@ class QuestionForm(forms.ModelForm):
 
 
 class ChoiceForm(forms.ModelForm):
-
     class Meta:
         model = Choice
         # fields = '__all__'
@@ -109,13 +107,17 @@ class ChoiceForm(forms.ModelForm):
     )
 
 
-ChoiceFormSet = forms.formset_factory(ChoiceForm, extra=3)
+ChoiceFormSet = forms.formset_factory(
+    ChoiceForm,
+    # extra=3
+)
 
 
-# class AnswerForm(forms.Form):
-#
-#     question = forms.CharField()
-#     answer_text = forms.TextInput()
+class AnswerNumberForm(forms.ModelForm):
+    class Meta:
+        model = AnswerNumber
+        # fields = ['number']
+        fields = []
 
 
 class AnswerForm(forms.ModelForm):
@@ -149,9 +151,8 @@ class AnswerForm(forms.ModelForm):
     )
 
     answer_choice = forms.ModelChoiceField(
-        queryset=Answer.objects.all(),
+        queryset=Choice.objects.none(),
         label='Выбор',
-        # initial=Answer.objects.filter(question=Question.objects.filter(pk=pk).first()),
         required=False,
         widget=forms.Select(
             attrs={'class': 'form-control mb-3'}
@@ -159,8 +160,7 @@ class AnswerForm(forms.ModelForm):
     )
 
     answer_multi = forms.ModelMultipleChoiceField(
-        queryset=None,
-        # queryset=Answer.objects.all(),
+        queryset=Choice.objects.none(),
         label='Опция',
         required=False,
         widget=forms.SelectMultiple(
@@ -168,7 +168,7 @@ class AnswerForm(forms.ModelForm):
         )
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, question, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['answer_multi'].queryset = Choice.objects.filter(question=Question.objects.filter(id=1).first())
-
+        self.fields['answer_choice'].queryset = Choice.objects.filter(question=question)
+        self.fields['answer_multi'].queryset = Choice.objects.filter(question=question)

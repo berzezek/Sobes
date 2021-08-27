@@ -1,17 +1,13 @@
 from datetime import date
 
-from django.forms import formset_factory
-from django.http import HttpResponseRedirect, request
-from django.db.models import Q
-from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
-from .models import Category, Question, Choice, Answer
-from .forms import CategoryForm, QuestionForm, ChoiceForm, AnswerForm, ChoiceFormSet
-from django.contrib import messages
-
-from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import CategoryForm, QuestionForm, AnswerForm, ChoiceFormSet, AnswerNumberForm
+from .models import Category, Question, Choice, Answer, AnswerNumber
 
 """Опросы"""
 
@@ -38,6 +34,7 @@ class CategoryDetailView(DetailView):
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['num'] = 0
         context['title'] = Category.objects.filter(pk=self.kwargs['pk']).first()
         context['questions'] = Question.objects.filter(category=context['title'])
         context['count'] = context['questions'].count()
@@ -51,9 +48,9 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('list')
 
     def form_valid(self, form):
-        messages.success(self.request, f'Опрос - создан')
         form.instance.owner = self.request.user
         super().form_valid(form)
+        messages.success(self.request, f'Опрос "{Category.objects.latest("pk")}"- создан')
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -63,11 +60,13 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     form_class = CategoryForm
 
     def form_valid(self, form):
-        if Category.elapse_date:
-            messages.error(self.request, f'Опрос начался!')
+        c = Category.objects.filter(pk=self.kwargs["pk"]).first()
+        if Category.elapse == True:
+            messages.error(self.request, f'Опрос "{c}" начался!')
         else:
-            messages.success(self.request, f'Опрос - обновлен')
+            messages.success(self.request, f'Опрос "{c}" - обновлен')
             super().form_valid(form)
+            messages.success(self.request, f'и теперь он звучит так: "{c}"')
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -77,10 +76,10 @@ class CategoryDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('list')
 
     def form_valid(self, form):
-        if Category.elapse_date:
-            messages.error(self.request, f'Опрос начался!')
+        if Category.elapse == True:
+            messages.error(self.request, f'Опрос "{Category.objects.filter(pk=self.kwargs["pk"]).first()}" начался!')
         else:
-            messages.success(self.request, f'Опрос - удален')
+            messages.error(self.request, f'Опрос "{Category.objects.filter(pk=self.kwargs["pk"]).first()}" - удален')
             super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -127,17 +126,19 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
-        if Category.elapse_date:
+        if Category.elapse == True:
             return reverse('list')
-        return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
+        else:
+            return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
-        if not Category.elapse_date:
-            messages.error(self.request, f'Опрос начался!')
+        # if Category.elapse:
+        if Category.elapse == True:
+            messages.error(self.request, f'Опрос "{Category.objects.filter(pk=self.kwargs["pk"]).first()}" начался!')
         else:
-            messages.success(self.request, f'Вопрос - добавлен')
             form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
             super().form_valid(form)
+            messages.success(self.request, f'Вопрос "{Question.objects.latest("pk")}"- добавлен')
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -154,16 +155,20 @@ class QuestionUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        if not Category.elapse_date:
-            messages.error(self.request, f'Опрос начался!')
+        c = Category.objects.filter(pk=self.kwargs["pk"]).first()
+        q = Question.objects.filter(pk=self.kwargs["q_pk"]).first()
+        if Category.elapse == True:
+            messages.error(self.request, f'Опрос "{c}" начался!')
         else:
-            messages.success(self.request, f'Вопрос - обновлен')
-            form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
+            messages.success(self.request, f'Вопрос {q}- обновлен')
+            form.instance.category = c
             super().form_valid(form)
+            messages.success(self.request,
+                             f'и теперь вопрос звучит так: "{q}", с вариантом ответа: {q.get_type_display()}')
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):  # Переадресация по "question.type"
-        if not Category.elapse_date:
+        if Category.elapse == True:
             return reverse('list')
         if Question.objects.filter(category=Category.objects.filter(pk=self.kwargs['pk']).first()).filter(
                 pk=self.kwargs['q_pk']).exclude(type='1'):
@@ -185,15 +190,16 @@ class QuestionDeleteView(LoginRequiredMixin, DeleteView):
         return context
 
     def get_success_url(self):
-        if not Category.elapse_date:
+        if Category.elapse == True:
             return reverse('list')
-        return reverse('category_detail', kwargs={'pk': self.kwargs['pk']})
+        else:
+            return reverse('category_detail', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form):
-        if not Category.elapse_date:
-            messages.error(self.request, f'Опрос начался!')
+        if Category.elapse == True:
+            messages.error(self.request, f'Опрос "{Category.objects.filter(pk=self.kwargs["pk"]).first()}" начался!')
         else:
-            messages.success(self.request, f'Вопрос - удален')
+            messages.error(self.request, f'Вопрос - удален')
             super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -205,27 +211,28 @@ class ChoiceCreateView(LoginRequiredMixin, CreateView):
     """Добавление варианта ответа"""
     model = Choice
     template_name = 'interview/choice/choice_create.html'
-    # form_class = formset_factory(ChoiceForm(instance=), extra=3)
-    form_class = ChoiceForm
+    fields = ['title']
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['formset'] = ChoiceFormSet()
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
         context['question'] = Question.objects.filter(pk=self.kwargs['q_pk']).first()
         return context
 
     def get_success_url(self):
-        if not Category.elapse_date:
-            return reverse('list')
+        if Question.objects.filter(category=Category.objects.filter(pk=self.kwargs['pk']).first()).first().type == '1':
+            return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
         return reverse('choice_create', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
 
-    def form_valid(self, form):
-        if not Category.elapse_date:
-            messages.error(self.request, f'Опрос начался!')
+    def form_valid(self, formset):
+        if Category.elapse == True:
+            messages.error(self.request, f'Опрос "{Category.objects.filter(pk=self.kwargs["pk"]).first()}" начался!')
         else:
-            form.instance.question = Question.objects.filter(pk=self.kwargs['q_pk']).first()
-            messages.success(self.request, f'Вариант ответа - добавлен')
-            super().form_valid(form)
+            formset.instance.title = self.request.POST['form-0-title']
+            formset.instance.question = Question.objects.filter(pk=self.kwargs['q_pk']).first()
+            super().form_valid(formset)
+            messages.success(self.request, f'Вариант ответа "{Choice.objects.order_by("-pk").first()}" - добавлен')
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -246,8 +253,8 @@ class ChoiceDeleteView(LoginRequiredMixin, DeleteView):
         return reverse('q_detail', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
 
     def form_valid(self, form):
-        if not Category.elapse_date:
-            messages.error(self.request, f'Опрос начался!')
+        if Category.elapse == True:
+            messages.error(self.request, f'Опрос "{Category.objects.filter(pk=self.kwargs["pk"]).first()}" начался!')
         else:
             messages.success(self.request, f'Вопрос - удален')
             super().form_valid(form)
@@ -273,23 +280,65 @@ class AnswerCreateView(CreateView):
     form_class = AnswerForm
     template_name = 'interview/answer/answer_create.html'
 
-    success_url = reverse_lazy('list')
+    def get_success_url(self):
+        return reverse('list')
 
     def form_valid(self, form):
         messages.success(self.request, f'Опрос - пройден')
-        form.instance.owner = self.request.user
+        form.instance.answer_numbers = AnswerNumber.objects.latest('number')
         form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
         form.instance.question = Question.objects.filter(category=form.instance.category).first()
         # form.instance.answer_choice = Choice.objects.filter(question=form.instance.question).first()
-        # form.instance.answer_multi = Choice.objects.filter(question=form.instance.question).first()
+        # form.instance.answer_multi.add = Choice.objects.filter(pk=self.kwargs['c_pk']).first()
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
-        context['questions'] = Question.objects.filter(category=context['category'])
+        context['questions'] = Question.objects.filter(category=context['category']).order_by('id')
         return context
 
-    # def get_success_url(self):
-    #     return reverse('choice_create', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['question'] = Question.objects.filter(
+            category=Category.objects.filter(pk=self.kwargs['pk']).first()).first()
+        return kwargs
+
+
+"""База ответов"""
+
+
+class AnswerNumberCreateView(CreateView):
+    model = AnswerNumber
+    form_class = AnswerNumberForm
+    template_name = 'interview/answer/answer_number_create.html'
+
+    def get_success_url(self):
+        return reverse('answer_create', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form):
+        try:
+            a = int(str(AnswerNumber.objects.latest('pk'))) + 1
+        except AnswerNumber.DoesNotExist:
+            a = 1
+        form.instance.number = 100000 + a
+        super().form_valid(form)
+        messages.success(self.request, f'Опрос {100000 + a} начался')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        return context
+
+
+class AnswerNumberListView(ListView):
+    """Поиск ответов пользователей по id"""
+    model = Answer
+    template_name = 'interview/answer/answer_number_list.html'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        object_list = AnswerNumber.objects.filter(number=query)
+        return object_list

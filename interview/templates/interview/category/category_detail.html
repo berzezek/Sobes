@@ -27,65 +27,65 @@
         {% endif %}
     </div>
 
-        <div class="container">
-                <span class="text-end ml-5 text-info">Количество вопросов: {{ count }}
-                    {% if user.is_authenticated %}
-                    {% if category.elapse_date %}
-                        <a href="{% url 'q_create' pk=category.pk %}" class="text-success ml-2">+</a>
-                    {% endif %}
-                    {% endif %}
-                </span>
-            <ul>
-                {% for q in questions %}
-                <li>
-                    <div class="container d-flex align-items-center mt-2">
-                        {% if user.is_authenticated %}
-                        {% if category.elapse_date %}
-                        <div>
-                            <a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.title }}</a>
-                        </div>
-                        <div>
-                            <a href="{% url 'q_update' pk=category.pk q_pk=q.pk %}" class="text-info ml-2">&#8635;</a>
-                        </div>
-                        <div>
-                            <a href="{{ q.get_delete_url }}" class="text-danger ml-2">&#215;</a>
-                        </div>
+    <div class="container">
+        <div class="d-flex justify-content-end mr-5">
+            <span class="ml-5 text-info">Количество вопросов: {{ count }}
+                {% if user.is_authenticated %}
+                {% if category.elapse_date %}
+                    <a href="{% url 'q_create' pk=category.pk %}" class="text-success ml-2">+</a>
+                {% endif %}
+                {% endif %}
+            </span>
+        </div>
 
-                        {% else %}
-                        <p>{{ q.title }}</p>
-                        {% endif %}
-                        {% endif %}
-                    </div>
+        <table class="mb-5">
+            {% for q in questions %}
+            <tr class="mt-1">
+                {% if user.is_authenticated %}
+                {% if category.elapse_date %}
+                <th>
+                    <a href="{{ q.get_absolute_url }}" class="text-decoration-none">{{ q.title }}</a>
+                </th>
+                <th>
+                    <a href="{% url 'q_update' pk=category.pk q_pk=q.pk %}" class="text-info ml-5">&#8635;</a>
+                </th>
+                <th>
+                    <a href="{{ q.get_delete_url }}" class="text-danger ml-2">&#215;</a>
+                </th>
+                <th>
+                    {% else %}
+                    <span>{{ q.title }}</span>
+                    {% endif %}
+                    {% endif %}
+                </th>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="{% url 'answer_number_create' pk=category.pk %}" class="btn btn-info my-2 shadow">Пройти опрос</a>
+        <a href="{% url 'list' %}" class="btn btn-secondary my-2 ml-2 shadow">Вернуться</a>
+    </div>
+
+    <div class="d-flex justify-content-end container text-muted">
+        <div>
+            <ul class="mr-2">
+                <li class="">
+                    Описание: {{ category.description }}
                 </li>
-
-                {% endfor %}
-
+                <li class="my-1">
+                    Автор: {{ category.owner }}
+                </li>
+                <li class="">
+                    Дата начала: {{ category.start_date|default_if_none:"Не определена" }}
+                    {% if not category.elapse_date %}
+                    <span class="small text-danger">* Вы не можете изменить опрос, т.к. он уже начался!</span>
+                    {% endif %}
+                </li>
+                <li class="mb-3">
+                    Дата окончания: {{ category.end_date|default_if_none:"Не определена" }}
+                </li>
             </ul>
-            <a href="{% url 'answer_create' pk=category.pk %}" class="btn btn-info my-2 shadow">Пройти опрос</a>
-            <a href="{% url 'list' %}" class="btn btn-secondary my-2 ml-2 shadow">Вернуться</a>
         </div>
-
-        <div class="d-flex justify-content-end container text-muted">
-            <div>
-                <ul class="mr-2">
-                    <li class="">
-                        Описание: {{ category.description }}
-                    </li>
-                    <li class="my-1">
-                        Автор: {{ category.owner }}
-                    </li>
-                    <li class="">
-                        Дата начала: {{ category.start_date|default_if_none:"Не определена" }}
-                        {% if not category.elapse_date %}
-                        <span class="small text-danger">* Вы не можете изменить опрос, т.к. он уже начался!</span>
-                        {% endif %}
-                    </li>
-                    <li class="mb-3">
-                        Дата окончания: {{ category.end_date|default_if_none:"Не определена" }}
-                    </li>
-                </ul>
-            </div>
-        </div>
+    </div>
 
 </div>
 <br>

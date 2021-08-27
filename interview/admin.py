@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Question, Choice, Answer
+from .models import Category, Question, Choice, Answer, AnswerNumber
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -23,4 +23,5 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Choice)
 admin.site.register(Answer)
+admin.site.register(AnswerNumber)
 

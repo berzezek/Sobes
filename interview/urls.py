@@ -19,7 +19,8 @@ from .views import (
 
     AnswerListView,
     AnswerCreateView,
-
+    AnswerNumberCreateView,
+    AnswerNumberListView,
 )
 
 urlpatterns = [
@@ -35,8 +36,10 @@ urlpatterns = [
     path('question/<pk>/<q_pk>/delete/', QuestionDeleteView.as_view(), name='q_delete'),
     path('question/<pk>/<q_pk>/', QuestionDetailView.as_view(), name='q_detail'),
 
-    path('answer/', AnswerListView.as_view(), name='answer_list'),
-    path('answer/search/', AnswerListView.as_view(), name='answer_search'),
+    path('answer/<pk>/number/', AnswerNumberCreateView.as_view(), name='answer_number_create'),
+    path('answer/search/', AnswerNumberListView.as_view(), name='answer_search'),
+    # path('answer/', AnswerListView.as_view(), name='answer_list'),
+    # path('answer/search/', AnswerListView.as_view(), name='answer_search'),
     path('answer/<pk>/create/', AnswerCreateView.as_view(), name='answer_create'),
 
     path('choice/<pk>/<q_pk>/create/', ChoiceCreateView.as_view(), name='choice_create'),
@@ -44,4 +47,6 @@ urlpatterns = [
 
     path('user/', LoginView.as_view(template_name='interview/user/user.html'), name='user'),
     path('exit/', LogoutView.as_view(template_name='interview/user/exit.html'), name='exit'),
+
+
 ]

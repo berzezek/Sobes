@@ -25,7 +25,13 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('category_detail', kwargs={'pk': self.pk})
 
-    def elapse_date(self):
+    def elapse(self): # Используется во views
+        if Category.objects.filter(pk=self.pk).filter(start_date__lte=date.today()):
+            return True
+        else:
+            return False
+
+    def elapse_date(self): # Используется в шаблонах
         if self.start_date:
             if (self.start_date - date.today()).days < 0:
                 return False
@@ -85,13 +91,24 @@ class Choice(models.Model):
         return str(self.title)
 
 
+class AnswerNumber(models.Model):
+    """Модель для объединения ответов"""
+    number = models.IntegerField()
+
+    def __str__(self):
+        return str(self.pk)
+
+    def get_create_url(self):
+        return reverse('proba', kwargs={'pk': self.category.pk})
+
+
 class Answer(models.Model):
     """Модель для ответов пользователя"""
     class Meta:
         verbose_name = 'Ответы пользователя'
         verbose_name_plural = 'Ответы пользователей'
 
-    owner = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    answer_numbers = models.ForeignKey('AnswerNumber', on_delete=models.DO_NOTHING)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     answer_text = models.TextField('Ответ Текстом', blank=True, null=True)
@@ -104,3 +121,4 @@ class Answer(models.Model):
 
     def __str__(self):
         return str(self.pk)
+

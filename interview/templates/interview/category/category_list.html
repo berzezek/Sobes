@@ -6,12 +6,12 @@
 {% block content %}
 
 <div class="container my-5">
-    <h3 class="text-center">Опросы</h3>
-    <div class="d-flex justify-content-end mb-3">
-        <p class="text-end text-muted mr-5">Количество доступных опросов - {{ count }}</p>
-    </div>
+    <p class="text-center display-4">Опросы</p>
+        <span class="text-muted">Количество - {{ count }}</span>
     {% if user.is_authenticated %}
-    <a href="{% url 'category_create' %}" class="btn btn-success">Создать новый опрос</a>
+    <div class="d-flex justify-content-center">
+        <a href="{% url 'category_create' %}" class="btn btn-success">Создать новый опрос</a>
+    </div>
     {% for el in categories %}
     <div class="shadow p-3 rounded my-3">
         <div class="container p-3">

@@ -1,0 +1,50 @@
+{% extends 'interview/base.html' %}
+{% block content %}
+<div class="container mt-5 shadow rounded p-5">
+    <h4>Поиск ответов</h4>
+
+    <form action="{{ object.get_absolute_url }}" method="get">
+        <input name="q" type="text" placeholder="Поиск...">
+    </form>
+</div>
+<div class="container mt-5 shadow rounded p-5">
+    {% if object_list %}
+    {%for el in object_list %}
+    <ul>
+
+        {{ el.number }}
+        <li>
+            Отвечал: {{ el.answer.question }}
+        </li>
+        <li>
+            Категория: {{ el.answer.category }}
+        </li>
+        <li>
+            Вопрос: {{ el.question }}
+        </li>
+        <li>
+            Вариант ответа: {{ el.question.get_type_display }}
+        </li>
+
+        <hr>
+        Ответ:
+        {% if el.question.type == '1' %}
+        <li>
+            {{ el.answer_text|default_if_none:"Пользователь не ответил" }}
+        </li>
+        {% elif el.question.type == '2' %}
+        <li>
+            {{ el.answer_choice|default_if_none:"Пользователь не ответил" }}
+        </li>
+        {% elif el.question.type == '3' %}
+        <li>
+            {{ el.answer_multi|default_if_none:"Пользователь не ответил" }}
+        </li>
+        {% endif %}
+    </ul>
+</div>
+{% endfor %}
+{% else %}
+<p>Ничего не нашлось пока</p>
+{% endif %}
+{% endblock %}

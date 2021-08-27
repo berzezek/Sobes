@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <div class="container justify-content-center shadow rounded p-5 mt-5">
+    <div class="container justify-content-center shadow rounded p-5 mt-5 w-75">
         <h4 class="text-center">Создать опрос</h4>
         <form method="post" class="">
             {% csrf_token %}
@@ -23,8 +23,9 @@
                 </div>
 
             </div>
+            <span class="text-muted mt-2 ml-2 small">*После начала опроса нельзя редактировать!</span><br>
 
-            <input type="submit" class="btn btn-secondary my-3 shadow" value="Создать">
+            <input type="submit" class="btn btn-success my-3 shadow" value="Создать">
         </form>
     </div>
 

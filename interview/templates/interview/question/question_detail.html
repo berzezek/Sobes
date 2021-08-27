@@ -44,20 +44,17 @@
             </div>
             <div>
                 {% for c in choice %}
-                <ul class="">
-                    <li>
-                        <div class="d-flex align-items-center">
-                            <div class="d-flex">
-                                <p>{{ c.title }}</p>
-                            </div>
-                            <div class="d-flex">
-                                <a href="{{ c.get_delete_url }}" class="text-danger ml-3"><p>&#215;</p></a>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+                <table class="ml-5">
+                    <tr>
+                        <th>
+                            <p>{{ c.title }} </p>
+                        </th>
+                        <th class="ml-5">
+                            <a href="{{ c.get_delete_url }}" class="text-danger"><p> &#215;</p></a>
+                        </th>
+                    </tr>
+                </table>
                 {% endfor %}
-
             </div>
         </div>
 

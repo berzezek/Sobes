@@ -17,7 +17,7 @@
         </h4>
         <form method="post">
             {% csrf_token %}
-            {{ form|crispy }}
+            {{ formset }}
             <div class="d-flex">
                 <div>
                     <input type="submit" class="btn btn-secondary shadow text-success" value="+">

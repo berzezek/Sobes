@@ -1,0 +1,13 @@
+{% extends 'interview/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <p class="text-center">Опрос: {{ category }}</p>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <div class="d-flex justify-content-center">
+            <input type="submit" value="Пройти опрос">
+        </div>
+    </form>
+</div>
+{% endblock %}
