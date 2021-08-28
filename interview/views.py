@@ -288,21 +288,19 @@ class AnswerCreateView(CreateView):
         form.instance.answer_numbers = AnswerNumber.objects.latest('number')
         form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
         form.instance.question = Question.objects.filter(category=form.instance.category).first()
-        # form.instance.answer_choice = Choice.objects.filter(question=form.instance.question).first()
-        # form.instance.answer_multi.add = Choice.objects.filter(pk=self.kwargs['c_pk']).first()
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
-        context['questions'] = Question.objects.filter(category=context['category']).order_by('id')
+        context['questions'] = Question.objects.filter(category=context['category'])
         return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['question'] = Question.objects.filter(
-            category=Category.objects.filter(pk=self.kwargs['pk']).first()).first()
+        kwargs['choice'] = Choice.objects.filter(question=Question.objects.filter(
+            category=Category.objects.filter(pk=self.kwargs['pk']).first()).first())
         return kwargs
 
 
@@ -322,9 +320,9 @@ class AnswerNumberCreateView(CreateView):
             a = int(str(AnswerNumber.objects.latest('pk'))) + 1
         except AnswerNumber.DoesNotExist:
             a = 1
-        form.instance.number = 100000 + a
+        form.instance.number = a
         super().form_valid(form)
-        messages.success(self.request, f'Опрос {100000 + a} начался')
+        messages.success(self.request, f'Опрос {a} начался')
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, object_list=None, **kwargs):
@@ -340,5 +338,10 @@ class AnswerNumberListView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        object_list = AnswerNumber.objects.filter(number=query)
+        object_list = Answer.objects.filter(answer_numbers=query)
         return object_list
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['answer'] = self.request.GET
+        return context

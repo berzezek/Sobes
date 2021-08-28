@@ -1,12 +1,13 @@
 from datetime import date
 
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django.urls import reverse
 
 
 class Category(models.Model):
     """Категория опросов"""
+
     class Meta:
         verbose_name = 'Опрос'
         verbose_name_plural = 'Опросы'
@@ -25,13 +26,13 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('category_detail', kwargs={'pk': self.pk})
 
-    def elapse(self): # Используется во views
+    def elapse(self):  # Используется во views
         if Category.objects.filter(pk=self.pk).filter(start_date__lte=date.today()):
             return True
         else:
             return False
 
-    def elapse_date(self): # Используется в шаблонах
+    def elapse_date(self):  # Используется в шаблонах
         if self.start_date:
             if (self.start_date - date.today()).days < 0:
                 return False
@@ -40,6 +41,7 @@ class Category(models.Model):
 
 class Question(models.Model):
     """Вопросы"""
+
     class Meta:
         verbose_name = 'Вопрос'
         verbose_name_plural = 'Вопросы'
@@ -54,7 +56,6 @@ class Question(models.Model):
                                  null=True, related_name='category')
     title = models.CharField('Вопрос', max_length=255)
     type = models.CharField('Тип ответа', max_length=1, choices=TYPE_QUESTION, default='1')
-    choice = models.ForeignKey('self', related_name='+', on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return str(self.title)
@@ -68,6 +69,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     """Промежуточная модель для формирования вариантов ответов"""
+
     class Meta:
         verbose_name = 'Вариант ответа'
         verbose_name_plural = 'Варианты ответов'
@@ -78,7 +80,6 @@ class Choice(models.Model):
     def get_absolute_url(self):
         return reverse('choice_detail',
                        kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
-        # return reverse('choice_create', kwargs={'pk': self.pk})
 
     def get_create_url(self):
         return reverse('choice_create', kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk})
@@ -93,6 +94,11 @@ class Choice(models.Model):
 
 class AnswerNumber(models.Model):
     """Модель для объединения ответов"""
+
+    class Meta:
+        verbose_name = 'Номер ответа'
+        verbose_name_plural = 'Номера ответов'
+
     number = models.IntegerField()
 
     def __str__(self):
@@ -104,6 +110,7 @@ class AnswerNumber(models.Model):
 
 class Answer(models.Model):
     """Модель для ответов пользователя"""
+
     class Meta:
         verbose_name = 'Ответы пользователя'
         verbose_name_plural = 'Ответы пользователей'
@@ -120,5 +127,4 @@ class Answer(models.Model):
         return reverse('answer_create', kwargs={'pk': self.category.pk})
 
     def __str__(self):
-        return str(self.pk)
-
+        return '№-{}. Опрос: {}, вопрос: {}'.format(self.answer_numbers, self.category.title, self.question.title)

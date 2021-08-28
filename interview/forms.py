@@ -128,8 +128,8 @@ class AnswerForm(forms.ModelForm):
             # 'category',
             # 'question',
             'answer_text',
-            # 'answer_choice',
-            # 'answer_multi'
+            'answer_choice',
+            'answer_multi'
         ]
 
     # question = forms.ModelChoiceField(
@@ -145,7 +145,7 @@ class AnswerForm(forms.ModelForm):
     answer_text = forms.CharField(
         label='Ответ текстом',
         required=False,
-        widget=forms.TextInput(
+        widget=forms.Textarea(
             attrs={'class': 'form-control mb-3'}
         )
     )
@@ -168,7 +168,7 @@ class AnswerForm(forms.ModelForm):
         )
     )
 
-    def __init__(self, question, *args, **kwargs):
+    def __init__(self, choice, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['answer_choice'].queryset = Choice.objects.filter(question=question)
-        self.fields['answer_multi'].queryset = Choice.objects.filter(question=question)
+        self.fields['answer_choice'].queryset = choice
+        self.fields['answer_multi'].queryset = choice
