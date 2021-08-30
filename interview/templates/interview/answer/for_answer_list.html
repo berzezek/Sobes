@@ -1,0 +1,14 @@
+{% extends 'interview/base.html' %}
+
+{% block title %}AnswerList{% endblock %}
+
+{% block content %}
+{% for object in questions %}
+<a href="{% url 'answer_create' pk=category.pk q_pk=object.pk an_pk=answer %}">
+    <div class="container shadow rounded p-5 mt-5">
+    {{ object }}
+    </div>
+</a>
+{% endfor %}
+
+{% endblock %}

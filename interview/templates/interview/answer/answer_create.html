@@ -6,15 +6,13 @@
 
 <div class="container mb-5">
     <h4 class="my-5 text-center">Опрос: {{ category }}</h4>
-    {% for el in questions %}
     <form method="post" class="my-3">
-        <p class="text-center">Вопрос: {{ el.title }} </p>
-        <p class="text-right">Ответ должен быть {{ el.get_type_display }} </p>
+        <p class="text-center">Вопрос: {{ question }} </p>
+        <p class="text-right">Ответ должен быть {{ question.get_type_display }} </p>
         {% csrf_token %}
         {{ form|crispy }}
         <input type="submit" class="btn btn-success" value="Ответить">
     </form>
-    {% endfor %}
 </div>
 <br>
 

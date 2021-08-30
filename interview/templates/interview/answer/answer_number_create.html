@@ -2,6 +2,14 @@
 {% block content %}
 <div class="container mt-5">
     <p class="text-center">Опрос: {{ category }}</p>
+    <p class="">Вопросы: </p>
+    <ul>
+        {% for question in questions %}
+        <li>
+            {{ question }}
+        </li>
+        {% endfor %}
+    </ul>
     <form action="" method="POST">
         {% csrf_token %}
         {{ form }}
@@ -10,4 +18,5 @@
         </div>
     </form>
 </div>
+
 {% endblock %}

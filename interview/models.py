@@ -66,6 +66,9 @@ class Question(models.Model):
     def get_delete_url(self):
         return reverse('q_delete', kwargs={'pk': self.category.pk, 'q_pk': self.pk})
 
+    def get_create_url(self):
+        return reverse('q_create', kwargs={'pk': self.category.pk})
+
 
 class Choice(models.Model):
     """Промежуточная модель для формирования вариантов ответов"""
@@ -79,14 +82,14 @@ class Choice(models.Model):
 
     def get_absolute_url(self):
         return reverse('choice_detail',
-                       kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
+                       kwargs={'pk': self.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
 
     def get_create_url(self):
-        return reverse('choice_create', kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk})
+        return reverse('choice_create', kwargs={'pk': self.category.pk, 'q_pk': self.question.pk})
 
     def get_delete_url(self):
         return reverse('choice_delete',
-                       kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
+                       kwargs={'pk': self.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
 
     def __str__(self):
         return str(self.title)
@@ -110,7 +113,6 @@ class AnswerNumber(models.Model):
 
 class Answer(models.Model):
     """Модель для ответов пользователя"""
-
     class Meta:
         verbose_name = 'Ответы пользователя'
         verbose_name_plural = 'Ответы пользователей'
@@ -123,8 +125,11 @@ class Answer(models.Model):
                                       related_name='answer_choice')
     answer_multi = models.ManyToManyField(Choice, blank=True, related_name='answer_multi')
 
+    def get_absolute_url(self):
+        return reverse('answer_list', kwargs={'pk': self.category.pk, 'an_pk': self.answernumber.pk})
+
     def get_create_url(self):
-        return reverse('answer_create', kwargs={'pk': self.category.pk})
+        return reverse('answer_create', kwargs={'pk': self.category.pk, 'q_pk': self.question.pk, 'an_pk': self.answer_numbers})
 
     def __str__(self):
         return '№-{}. Опрос: {}, вопрос: {}'.format(self.answer_numbers, self.category.title, self.question.title)

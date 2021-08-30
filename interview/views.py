@@ -87,17 +87,17 @@ class CategoryDeleteView(LoginRequiredMixin, DeleteView):
 """Вопросы"""
 
 
-class QuestionListView(ListView):
-    """Все Опросы"""
-    model = Question
-    template_name = 'interview/question/question_list.html'
-
-    def get_context_data(self, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        category = Category.objects.filter(pk=self.kwargs['pk']).first()
-        context['questions'] = Question.objects.filter(category=category).values()
-        print(context['questions'].query)
-        return context
+# class QuestionListView(ListView):
+#     """Все Опросы"""
+#     model = Question
+#     template_name = 'interview/question/question_list.html'
+#
+#     def get_context_data(self, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         category = Category.objects.filter(pk=self.kwargs['pk']).first()
+#         context['questions'] = Question.objects.filter(category=category).values()
+#         print(context['questions'].query)
+#         return context
 
 
 class QuestionDetailView(DetailView):
@@ -129,7 +129,11 @@ class QuestionCreateView(LoginRequiredMixin, CreateView):
         if Category.elapse == True:
             return reverse('list')
         else:
-            return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
+            if Question.objects.latest('id').type == '1':
+                return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
+            else:
+                return reverse('choice_create',
+                               kwargs={'pk': self.kwargs['pk'], 'q_pk': Question.objects.latest('pk').pk})
 
     def form_valid(self, form):
         # if Category.elapse:
@@ -237,6 +241,7 @@ class ChoiceCreateView(LoginRequiredMixin, CreateView):
 
 
 class ChoiceDeleteView(LoginRequiredMixin, DeleteView):
+    """Удаление варианта ответа"""
     model = Choice
     template_name = 'interview/choice/choice_delete.html'
     pk_url_kwarg = 'c_pk'
@@ -261,73 +266,33 @@ class ChoiceDeleteView(LoginRequiredMixin, DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-"""Ответы пользователей"""
-
-
-class AnswerListView(ListView):
-    """Поиск ответов пользователей по id"""
-    model = Answer
-    template_name = 'interview/answer/answer_search.html'
-
-    def get_queryset(self):
-        query = self.request.GET.get('q')
-        object_list = Answer.objects.filter(id=query)
-        return object_list
-
-
-class AnswerCreateView(CreateView):
-    model = Answer
-    form_class = AnswerForm
-    template_name = 'interview/answer/answer_create.html'
-
-    def get_success_url(self):
-        return reverse('list')
-
-    def form_valid(self, form):
-        messages.success(self.request, f'Опрос - пройден')
-        form.instance.answer_numbers = AnswerNumber.objects.latest('number')
-        form.instance.category = Category.objects.filter(pk=self.kwargs['pk']).first()
-        form.instance.question = Question.objects.filter(category=form.instance.category).first()
-        super().form_valid(form)
-        return HttpResponseRedirect(self.get_success_url())
-
-    def get_context_data(self, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
-        context['questions'] = Question.objects.filter(category=context['category'])
-        return context
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['choice'] = Choice.objects.filter(question=Question.objects.filter(
-            category=Category.objects.filter(pk=self.kwargs['pk']).first()).first())
-        return kwargs
-
-
 """База ответов"""
 
 
 class AnswerNumberCreateView(CreateView):
+    """Создание номера для опроса пользователя"""
     model = AnswerNumber
     form_class = AnswerNumberForm
     template_name = 'interview/answer/answer_number_create.html'
 
     def get_success_url(self):
-        return reverse('answer_create', kwargs={'pk': self.kwargs['pk']})
+        return reverse('answer_list',
+                       kwargs={'pk': self.kwargs['pk'], 'an_pk': AnswerNumber.objects.latest('number').pk})
 
     def form_valid(self, form):
         try:
-            a = int(str(AnswerNumber.objects.latest('pk'))) + 1
+            a = int(str(AnswerNumber.objects.latest('pk')))
         except AnswerNumber.DoesNotExist:
-            a = 1
+            a = 0
         form.instance.number = a
         super().form_valid(form)
-        messages.success(self.request, f'Опрос {a} начался')
+        messages.success(self.request, f'Опрос {a + 1} начался')
         return HttpResponseRedirect(self.get_success_url())
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category'] = Category.objects.filter(pk=self.kwargs['pk']).first()
+        context['questions'] = Question.objects.filter(category=self.kwargs['pk'])
         return context
 
 
@@ -344,4 +309,65 @@ class AnswerNumberListView(ListView):
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['answer'] = self.request.GET
+        context['category'] = Answer.objects.all()
         return context
+
+
+"""Ответы пользователей"""
+
+
+class AnswerListView(ListView):
+    """Получаем все вопросы для последующего опроса"""
+    model = Answer
+    # model = Question
+    template_name = 'interview/answer/for_answer_list.html'
+    paginate_by = 1
+
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['answer'] = self.kwargs['an_pk']
+        context['category'] = Category.objects.get(pk=self.kwargs['pk'])
+        context['questions'] = Question.objects.filter(category=context['category'])
+        return context
+
+
+class AnswerCreateView(CreateView):
+    model = Answer
+    form_class = AnswerForm
+    template_name = 'interview/answer/answer_create.html'
+
+
+    def get_success_url(self):
+        question = Question.objects.filter(category=Category.objects.get(pk=self.kwargs['pk']))
+        print(question.count())
+        try:
+            return reverse('answer_create',
+                           kwargs={'pk': self.kwargs['pk'],
+                                    'q_pk': Question.objects.filter(
+                                        category=Category.objects.get(
+                                            pk=self.kwargs['pk'])).get(pk=int(self.kwargs['q_pk']) + 1).pk,
+                                    'an_pk': self.kwargs['an_pk']})
+        except Question.DoesNotExist:
+            return reverse('list',
+                           messages.success(self.request, f'Опрос {Category.objects.get(pk=self.kwargs["pk"])} пройден,'
+                                                          f'№ {Answer.objects.get(pk=self.kwargs["an_pk"]).answer_numbers}'))
+
+    def form_valid(self, form):
+        form.instance.answer_numbers = AnswerNumber.objects.latest('number')
+        form.instance.category = Category.objects.get(pk=self.kwargs['pk'])
+        form.instance.question = Question.objects.get(pk=self.kwargs['q_pk'])
+        super().form_valid(form)
+        messages.success(self.request, f'Ответ на вопрос {form.instance.question} - получен')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.get(pk=self.kwargs['pk'])
+        context['question'] = Question.objects.get(pk=self.kwargs['q_pk'])
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['choice'] = Choice.objects.filter(question=Question.objects.get(pk=self.kwargs['q_pk']))
+        return kwargs

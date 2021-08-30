@@ -30,11 +30,7 @@
     <div class="container">
         <div class="d-flex justify-content-end mr-5">
             <span class="ml-5 text-info">Количество вопросов: {{ count }}
-                {% if user.is_authenticated %}
-                {% if category.elapse_date %}
-                    <a href="{% url 'q_create' pk=category.pk %}" class="text-success ml-2">+</a>
-                {% endif %}
-                {% endif %}
+
             </span>
         </div>
 
@@ -62,6 +58,11 @@
             {% endfor %}
         </table>
         <a href="{% url 'answer_number_create' pk=category.pk %}" class="btn btn-info my-2 shadow">Пройти опрос</a>
+        {% if user.is_authenticated %}
+        {% if category.elapse_date %}
+        <a href="{% url 'q_create' pk=category.pk %}" class="btn btn-success my-2 ml-2 shadow">Добавить вопрос</a>
+        {% endif %}
+        {% endif %}
         <a href="{% url 'list' %}" class="btn btn-secondary my-2 ml-2 shadow">Вернуться</a>
     </div>
 

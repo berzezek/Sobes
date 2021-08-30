@@ -2,53 +2,40 @@
 {% block content %}
 <div class="container mt-5 shadow rounded p-5">
     <h4>Поиск ответов</h4>
-
     <form action="{{ object.get_absolute_url }}" method="get">
         <input name="q" type="text" placeholder="Поиск...">
     </form>
 </div>
+<div>
+    {% if object_list %}
+    {% for el in object_list %}
+    <div class="container my-2 shadow rounded p-3">
+        <p class="text-center">Вопрос: {{ el.question }}</p>
 
+        <ul>
+            {% if el.answer_text %}
+            <p>Ответ:</p>
+            <li>{{ el.answer_text }}</li>
+            {% elif el.answer_choice %}
+            <p>Ответ:</p>
+            <li>{{ el.answer_choice }}</li>
+            {% elif el.answer_multi.all %}
+            <p>Ответы:</p>
+            {% for mult in el.answer_multi.all %}
+            <li>{{ mult }}</li>
+            {% endfor %}
 
-{% if object_list %}
-<p class="text-center my-3">По номеру {{ answer.q }} нашлось следущее: </p>
-{%for el in object_list %}
-<div class="container my-5 shadow rounded p-5">
-
-    <ul>
-        <li>
-            Категория: {{ el.category }}
-        </li>
-        <li>
-            Вопрос: {{ el.question }}
-        </li>
-        <li>
-            Вариант ответа: {{ el.question.get_type_display }}
-        </li>
-        <hr>
-
-        {% if el.question.type == '1' %}
-        Ответ:
-        <li>
-            <p>{{ el.answer_text }}</p>
-        </li>
-        {% elif el.question.type == '2' %}
-        Ответ:
-        <li>
-            <p>{{ el.answer_choice|default_if_none:"Пользователь не ответил" }}</p>
-        </li>
-        {% elif el.question.type == '3' %}
-        Ответы:
-        {% for a_m in el.answer_multi.all %}
-        <li>
-            <p>{{ a_m }}</p>
-        </li>
-        {% endfor %}
-    </ul>
+            {% endif %}
+        </ul>
+    </div>
+    {% endfor %}
+    {% else %}
+        <p class="text-center mt-5 display-4">По вашему запросу ничего не нашлось :(</p>
+    {% endif %}
 </div>
-{% endif %}
-{% endfor %}
-{% else %}
-<p>По номеру {{ answer.q }} - ничего не нашлось :(</p>
-{% endif %}
+<br>
+<br>
+<br>
+
 
 {% endblock %}
