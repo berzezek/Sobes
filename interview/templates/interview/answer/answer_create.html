@@ -4,13 +4,22 @@
 
 {% block content %}
 
-<div class="container mb-5">
-    <h4 class="my-5 text-center">Опрос: {{ category }}</h4>
-    <form method="post" class="my-3">
-        <p class="text-center">Вопрос: {{ question }} </p>
-        <p class="text-right">Ответ должен быть {{ question.get_type_display }} </p>
+<div class="container my-5 shadow rounded p-5">
+    <p class="text-right">Опрос: {{ category }}</p>
+    <form method="post" class="">
+        <h3 class="text-center">Вопрос: {{ question }} </h3>
         {% csrf_token %}
-        {{ form|crispy }}
+        <p></p>
+        {% if question.type == '1' %}
+        <p>Впишите свой ответ:</p>
+        {{ form.answer_text }}
+        {% elif question.type == '2' %}
+        <p>Выберите ответ:</p>
+        {{ form.answer_choice }}
+        {% elif question.type == '3' %}
+        <p>Выберите ответы:</p>
+        {{ form.answer_multi }}
+        {% endif %}
         <input type="submit" class="btn btn-success" value="Ответить">
     </form>
 </div>

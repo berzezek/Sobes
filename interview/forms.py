@@ -33,7 +33,7 @@ class CategoryForm(forms.ModelForm):
     )
 
     start_date = forms.DateField(
-        initial=date.replace(date.today(), month=(date.today().month + 1)),
+        # initial=date.replace(date.today(), month=(date.today().month + 1)),
         label='Начало опроса',
         required=False,
         widget=forms.DateInput(
@@ -42,7 +42,7 @@ class CategoryForm(forms.ModelForm):
     )
 
     end_date = forms.DateField(
-        initial=date.replace(date.today(), year=(date.today().year + 1)),
+        # initial=date.replace(date.today(), year=(date.today().year + 1)),
         label='Окончание опроса',
         required=False,
         widget=forms.DateInput(
@@ -146,7 +146,7 @@ class AnswerForm(forms.ModelForm):
         label='Ответ текстом',
         required=False,
         widget=forms.Textarea(
-            attrs={'class': 'form-control mb-3'}
+            attrs={'class': 'form-control mb-3', 'rows': 3}
         )
     )
 

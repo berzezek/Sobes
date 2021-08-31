@@ -17,7 +17,7 @@ from .views import (
     ChoiceCreateView,
     ChoiceDeleteView,
 
-    AnswerListView,
+    # AnswerListView,
     AnswerCreateView,
     AnswerNumberCreateView,
     AnswerNumberListView,
@@ -43,7 +43,7 @@ urlpatterns = [
     path('exit/', LogoutView.as_view(template_name='interview/user/exit.html'), name='exit'),
 
     path('answer/<pk>/number/', AnswerNumberCreateView.as_view(), name='answer_number_create'),
-    path('answer/<an_pk>/<pk>/', AnswerListView.as_view(), name='answer_list'),
+    # path('answer/<an_pk>/<pk>/', AnswerListView.as_view(), name='answer_list'),
     path('answer/search/', AnswerNumberListView.as_view(), name='answer_search'),
     path('answer/<an_pk>/<pk>/<q_pk>/create/', AnswerCreateView.as_view(), name='answer_create'),
 

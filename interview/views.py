@@ -276,8 +276,12 @@ class AnswerNumberCreateView(CreateView):
     template_name = 'interview/answer/answer_number_create.html'
 
     def get_success_url(self):
-        return reverse('answer_list',
-                       kwargs={'pk': self.kwargs['pk'], 'an_pk': AnswerNumber.objects.latest('number').pk})
+        return reverse('answer_create',
+                       kwargs={
+                           'pk': self.kwargs['pk'],
+                           'q_pk': Question.objects.filter(category=Category.objects.get(pk=self.kwargs['pk'])).first().pk,
+                           'an_pk': AnswerNumber.objects.latest('number').pk
+                       })
 
     def form_valid(self, form):
         try:
@@ -316,38 +320,20 @@ class AnswerNumberListView(ListView):
 """Ответы пользователей"""
 
 
-class AnswerListView(ListView):
-    """Получаем все вопросы для последующего опроса"""
-    model = Answer
-    # model = Question
-    template_name = 'interview/answer/for_answer_list.html'
-    paginate_by = 1
-
-
-    def get_context_data(self, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['answer'] = self.kwargs['an_pk']
-        context['category'] = Category.objects.get(pk=self.kwargs['pk'])
-        context['questions'] = Question.objects.filter(category=context['category'])
-        return context
-
-
 class AnswerCreateView(CreateView):
     model = Answer
     form_class = AnswerForm
     template_name = 'interview/answer/answer_create.html'
 
-
     def get_success_url(self):
         question = Question.objects.filter(category=Category.objects.get(pk=self.kwargs['pk']))
         print(question.count())
         try:
-            return reverse('answer_create',
-                           kwargs={'pk': self.kwargs['pk'],
-                                    'q_pk': Question.objects.filter(
-                                        category=Category.objects.get(
-                                            pk=self.kwargs['pk'])).get(pk=int(self.kwargs['q_pk']) + 1).pk,
-                                    'an_pk': self.kwargs['an_pk']})
+            return reverse('answer_create', kwargs={
+                'pk': self.kwargs['pk'],
+                'q_pk': Question.objects.filter(category=Category.objects.filter(pk=self.kwargs['pk']).first()).first().pk + 1,
+                'an_pk': self.kwargs['an_pk']
+            })
         except Question.DoesNotExist:
             return reverse('list',
                            messages.success(self.request, f'Опрос {Category.objects.get(pk=self.kwargs["pk"])} пройден,'
