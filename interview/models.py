@@ -89,7 +89,7 @@ class Choice(models.Model):
 
     def get_delete_url(self):
         return reverse('choice_delete',
-                       kwargs={'pk': self.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
+                       kwargs={'pk': self.question.category.pk, 'q_pk': self.question.pk, 'c_pk': self.pk})
 
     def __str__(self):
         return str(self.title)
