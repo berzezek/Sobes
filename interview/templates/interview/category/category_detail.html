@@ -30,7 +30,6 @@
     <div class="container">
         <div class="d-flex justify-content-end mr-5">
             <span class="ml-5 text-info">Количество вопросов: {{ count }}
-
             </span>
         </div>
 
@@ -50,7 +49,7 @@
                 </th>
                 <th>
                     {% else %}
-                    <span>{{ q.title }}</span>
+                    <li>{{ q.title }}</li>
                     {% endif %}
                     {% endif %}
                 </th>
