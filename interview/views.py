@@ -47,7 +47,7 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
     form_class = CategoryForm
 
     def get_success_url(self):
-        return reverse('q_create', kwargs={'pk': Category.objects.latest().pk})
+        return reverse('q_create', kwargs={'pk': Category.objects.latest('pk').pk})
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
