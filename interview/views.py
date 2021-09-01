@@ -231,7 +231,7 @@ class ChoiceCreateView(LoginRequiredMixin, CreateView):
         return context
 
     def get_success_url(self):
-        if Question.objects.filter(category=Category.objects.filter(pk=self.kwargs['pk']).first()).first().type == '1':
+        if Question.objects.get(pk=self.kwargs['q_pk']).type == '1':
             return reverse('q_create', kwargs={'pk': self.kwargs['pk']})
         return reverse('choice_create', kwargs={'pk': self.kwargs['pk'], 'q_pk': self.kwargs['q_pk']})
 
