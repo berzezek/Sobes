@@ -69,10 +69,6 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
         else:
             messages.success(self.request, f'Опрос "{c}" - обновлен')
             super().form_valid(form)
-            if c != Category.objects.filter(int(pk=self.kwargs["pk"]) - 1).first():
-                messages.success(self.request, f'и теперь он звучит так: "{c}"')
-            else:
-                messages.success(self.request, f'Правда вы оставили его без изменений')
         return HttpResponseRedirect(self.get_success_url())
 
 
