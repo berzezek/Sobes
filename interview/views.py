@@ -45,12 +45,15 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = Category
     template_name = 'interview/category/category_create.html'
     form_class = CategoryForm
-    success_url = reverse_lazy('list')
+
+    def get_success_url(self):
+        return reverse('q_create', kwargs={'pk': Category.objects.latest().pk})
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
         super().form_valid(form)
         messages.success(self.request, f'Опрос "{Category.objects.latest("pk")}"- создан')
+        messages.success(self.request, f'Приступайте к добавлению вопросов')
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -66,7 +69,10 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
         else:
             messages.success(self.request, f'Опрос "{c}" - обновлен')
             super().form_valid(form)
-            messages.success(self.request, f'и теперь он звучит так: "{c}"')
+            if c != Category.objects.filter(pk=self.kwargs["pk"] - 1).first():
+                messages.success(self.request, f'и теперь он звучит так: "{c}"')
+            else:
+                messages.success(self.request, f'Правда вы оставили его без изменений')
         return HttpResponseRedirect(self.get_success_url())
 
 
