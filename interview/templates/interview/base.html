@@ -7,14 +7,19 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %}</title>
-<!--    <link rel="icon" href="{% static 'interview/favicon.ico' %}" type="image/x-icon">-->
+    <link rel="icon" href="{% static 'interview/favicon.ico' %}" type="image/x-icon">
     <!-- CSS only -->
-<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/sketchy/bootstrap.min.css">-->
+    <!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/sketchy/bootstrap.min.css">-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@4.5.2/dist/cerulean/bootstrap.min.css">
 </head>
 <body>
 <header class="navbar navbar-dark bg-dark shadow-sm py-3">
+
     <a href="{% url 'list' %}" class="btn btn-secondary ml-5">На главную</a>
+    <div>
+        <a href="{% url 'swagger-ui' %}" class="btn btn-warning mr-3">API swagger</a>
+        <a href="{% url 'redoc' %}" class="btn btn-warning">API redoc</a>
+    </div>
     <a href="{% url 'answer_search' %}" class="btn btn-secondary">Поиск</a>
 
     {% if user.is_authenticated %}
@@ -24,15 +29,15 @@
     {% endif %}
 </header>
 {% if messages %}
-    <div class="container my-1">
-        {% for mess in messages %}
-        {% if mess.tags == 'success' %}
-        <div class="container w-50 alert alert-success text-center">{{ mess }}</div>
-        {% elif mess.tags == 'error' %}
-        <div class="container w-50 alert alert-danger text-center">{{ mess }}</div>
-        {% endif %}
-        {% endfor %}
-    </div>
+<div class="container my-1">
+    {% for mess in messages %}
+    {% if mess.tags == 'success' %}
+    <div class="container w-50 alert alert-success text-center">{{ mess }}</div>
+    {% elif mess.tags == 'error' %}
+    <div class="container w-50 alert alert-danger text-center">{{ mess }}</div>
+    {% endif %}
+    {% endfor %}
+</div>
 {% endif %}
 
 {% block content %}

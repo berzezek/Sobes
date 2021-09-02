@@ -34,7 +34,6 @@ class CategoryDetailView(DetailView):
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['num'] = 0
         context['title'] = Category.objects.filter(pk=self.kwargs['pk']).first()
         context['questions'] = Question.objects.filter(category=context['title'])
         context['count'] = context['questions'].count()
