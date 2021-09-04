@@ -1,22 +1,25 @@
+from rest_framework import generics, status
 from rest_framework.permissions import IsAdminUser
-from ..models import Category, Question, Choice, Answer
+from rest_framework.response import Response
+
 from .permissions import IsStartDateBegin
 from .serializers import (
     CategoryModelSerializer,
     QuestionModelSerializer,
     QuestionCreateModelSerializer,
     ChoiceModelSerializer,
+    AnswerNumberModelSerializer,
     AnswerModelSerializer,
 )
-from rest_framework import generics
+from ..models import Category, Question, Choice, Answer, AnswerNumber
 
 
-class CategoryListApiView(generics.ListAPIView):
+class CategoryList(generics.ListAPIView):
     serializer_class = CategoryModelSerializer
     queryset = Category.objects.all()
 
 
-class CategoryCreateApiView(generics.ListCreateAPIView):
+class CategoryCreate(generics.ListCreateAPIView):
     serializer_class = CategoryModelSerializer
     queryset = Category.objects.all()
     permission_classes = (IsAdminUser,)
@@ -25,7 +28,7 @@ class CategoryCreateApiView(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class CategoryUpdateApiView(generics.RetrieveUpdateAPIView):
+class CategoryUpdate(generics.RetrieveUpdateAPIView):
     serializer_class = CategoryModelSerializer
     queryset = Category.objects.all()
     permission_classes = (IsAdminUser, IsStartDateBegin)
@@ -34,14 +37,14 @@ class CategoryUpdateApiView(generics.RetrieveUpdateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class CategoryDestroyApiView(generics.DestroyAPIView):
+class CategoryDestroy(generics.DestroyAPIView):
     serializer_class = CategoryModelSerializer
     queryset = Category.objects.all()
     permission_classes = (IsAdminUser, IsStartDateBegin)
     lookup_url_kwarg = 'pk'
 
 
-class QuestionListApiView(generics.ListAPIView):
+class QuestionList(generics.ListAPIView):
     serializer_class = QuestionModelSerializer
 
     def get_queryset(self):
@@ -50,8 +53,9 @@ class QuestionListApiView(generics.ListAPIView):
         return queryset
 
 
-class QuestionCreateApiView(generics.ListCreateAPIView):
+class QuestionCreate(generics.ListCreateAPIView):
     serializer_class = QuestionCreateModelSerializer
+    permission_classes = (IsAdminUser, IsStartDateBegin)
 
     def perform_create(self, serializer):
         serializer.save(category=Category.objects.get(pk=self.kwargs['pk']))
@@ -60,28 +64,60 @@ class QuestionCreateApiView(generics.ListCreateAPIView):
         return Question.objects.filter(category=Category.objects.get(pk=self.kwargs['pk']))
 
 
-class QuestionUpdateApiView(generics.RetrieveUpdateAPIView):
+class QuestionUpdate(generics.RetrieveUpdateAPIView):
     serializer_class = QuestionCreateModelSerializer
     queryset = Question.objects.all()
+    permission_classes = (IsAdminUser, IsStartDateBegin)
     lookup_url_kwarg = 'q_pk'
 
 
-class QuestionDestroyApiView(generics.ListAPIView, generics.DestroyAPIView):
+class QuestionDestroy(generics.ListAPIView, generics.DestroyAPIView):
     serializer_class = QuestionModelSerializer
+    permission_classes = (IsAdminUser, IsStartDateBegin)
 
     def get_queryset(self):
         return Question.objects.filter(pk=self.kwargs['q_pk'])
 
 
 class ChoiceList(generics.ListCreateAPIView):
-
     serializer_class = ChoiceModelSerializer
+    permission_classes = (IsAdminUser, IsStartDateBegin)
 
     def get_queryset(self):
         return Question.objects.filter(pk=self.kwargs['q_pk'])
-# #
-# #
-# # class AnswerList(generics.ListCreateAPIView):
-# #
-# #     queryset = Answer.objects.all()
-# #     serializer_class = AnswerModelSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(question=Question.objects.get(pk=self.kwargs['q_pk']))
+
+
+class ChoiceDestroy(generics.ListAPIView, generics.DestroyAPIView):
+    serializer_class = ChoiceModelSerializer
+    permission_classes = (IsAdminUser, IsStartDateBegin)
+
+    def get_queryset(self):
+        return Choice.objects.filter(pk=self.kwargs['c_pk'])
+
+
+class AnswerNumberCreate(generics.ListCreateAPIView):
+
+    queryset = AnswerNumber.objects.all()
+    serializer_class = AnswerNumberModelSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(number=AnswerNumber.objects.latest('pk').pk + 1)
+
+
+class AnswerCreate(generics.ListCreateAPIView):
+
+    serializer_class = AnswerModelSerializer
+    lookup_url_kwarg = 'an_pk'
+
+    def get_queryset(self):
+        return Answer.objects.filter(pk=self.kwargs['q_pk']).first()
+
+    def perform_create(self, serializer):
+        serializer.save(
+            category=Category.objects.get(pk=self.kwargs['pk']),
+            answer_numbers=AnswerNumber.objects.get(pk=self.kwargs['an_pk']),
+            question=Question.objects.get(pk=self.kwargs['q_pk']),
+        )

@@ -87,20 +87,6 @@ class CategoryDeleteView(LoginRequiredMixin, DeleteView):
 
 """Вопросы"""
 
-
-# class QuestionListView(ListView):
-#     """Все Опросы"""
-#     model = Question
-#     template_name = 'interview/question/question_list.html'
-#
-#     def get_context_data(self, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         category = Category.objects.filter(pk=self.kwargs['pk']).first()
-#         context['questions'] = Question.objects.filter(category=category).values()
-#         print(context['questions'].query)
-#         return context
-
-
 class QuestionDetailView(DetailView):
     """Вопросы по категориям"""
     model = Category
