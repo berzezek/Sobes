@@ -7,7 +7,6 @@ from django.urls import reverse
 
 class Category(models.Model):
     """Категория опросов"""
-
     class Meta:
         verbose_name = 'Опрос'
         verbose_name_plural = 'Опросы'
@@ -108,7 +107,7 @@ class AnswerNumber(models.Model):
         return str(self.pk)
 
     def get_create_url(self):
-        return reverse('proba', kwargs={'pk': self.category.pk})
+        return reverse('answer_number_create', kwargs={'pk': self.category.pk})
 
 
 class Answer(models.Model):

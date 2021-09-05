@@ -11,11 +11,13 @@ from .views import (
     QuestionDestroy,
 
     ChoiceList,
+    ChoiceCreate,
     ChoiceDestroy,
 
     AnswerNumberCreate,
 
     AnswerCreate,
+    AnswerSearch,
 )
 
 from django.views.generic import TemplateView
@@ -32,10 +34,13 @@ urlpatterns = [
     path('<pk>/<q_pk>/update/', QuestionUpdate.as_view(), name='api_q_update'),
     path('<pk>/<q_pk>/delete/', QuestionDestroy.as_view(), name='api_q_delete'),
 
-    path('<pk>/<q_pk>/', ChoiceList.as_view(), name='api_choice_list'),
+    path('<pk>/<q_pk>/detail', ChoiceList.as_view(), name='api_choice_list'),
+    path('<pk>/<q_pk>/create', ChoiceCreate.as_view(), name='api_choice_create'),
     path('<pk>/<q_pk>/<c_pk>/delete', ChoiceDestroy.as_view(), name='api_choice_delete'),
 
     path('answer/<pk>/create/', AnswerNumberCreate.as_view(), name='api_answer_number_create'),
+    path('search/', AnswerSearch.as_view(), name='answer_search'),
+
     path('answer/<an_pk>/<pk>/<q_pk>/create/', AnswerCreate.as_view(), name='answer_create'),
 
     path('openapi', get_schema_view(

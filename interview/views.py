@@ -87,6 +87,7 @@ class CategoryDeleteView(LoginRequiredMixin, DeleteView):
 
 """Вопросы"""
 
+
 class QuestionDetailView(DetailView):
     """Вопросы по категориям"""
     model = Category
@@ -266,7 +267,8 @@ class AnswerNumberCreateView(CreateView):
         return reverse('answer_create',
                        kwargs={
                            'pk': self.kwargs['pk'],
-                           'q_pk': Question.objects.filter(category=Category.objects.get(pk=self.kwargs['pk'])).first().pk,
+                           'q_pk': Question.objects.filter(
+                               category=Category.objects.get(pk=self.kwargs['pk'])).first().pk,
                            'an_pk': AnswerNumber.objects.latest('number').pk
                        })
 
@@ -311,28 +313,30 @@ class AnswerCreateView(CreateView):
     model = Answer
     form_class = AnswerForm
     template_name = 'interview/answer/answer_create.html'
+    pk_url_kwarg = 'an_pk'
 
     def get_success_url(self):
-        question = Question.objects.filter(category=Category.objects.get(pk=self.kwargs['pk']))
-        print(question.count())
         try:
             return reverse('answer_create', kwargs={
                 'pk': self.kwargs['pk'],
-                'q_pk': Question.objects.filter(category=Category.objects.filter(pk=self.kwargs['pk']).first()).first().pk + 1,
+                'q_pk': Question.objects.filter(category__id=self.kwargs['pk']).get(pk=int(self.kwargs['q_pk']) + 1).pk,
                 'an_pk': self.kwargs['an_pk']
             })
         except Question.DoesNotExist:
             return reverse('list',
-                           messages.success(self.request, f'Опрос {Category.objects.get(pk=self.kwargs["pk"])} пройден,'
-                                                          f'№ {Answer.objects.get(pk=self.kwargs["an_pk"]).answer_numbers}'))
+                           messages.success(
+                               self.request, f'Опрос {Category.objects.get(pk=self.kwargs["pk"])} '
+                                             f'пройден, № {Answer.objects.get(pk=self.kwargs["an_pk"]).pk}')
+                           )
 
     def form_valid(self, form):
         form.instance.answer_numbers = AnswerNumber.objects.latest('number')
         form.instance.category = Category.objects.get(pk=self.kwargs['pk'])
         form.instance.question = Question.objects.get(pk=self.kwargs['q_pk'])
-        super().form_valid(form)
-        messages.success(self.request, f'Ответ на вопрос {form.instance.question} - получен')
-        return HttpResponseRedirect(self.get_success_url())
+        # super().form_valid(form)
+        messages.success(self.request, f'Ответ на вопрос "{form.instance.question}" - получен')
+        # return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -342,5 +346,5 @@ class AnswerCreateView(CreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['choice'] = Choice.objects.filter(question=Question.objects.get(pk=self.kwargs['q_pk']))
+        kwargs['choice'] = Choice.objects.filter(question__id=self.kwargs['q_pk'])
         return kwargs
