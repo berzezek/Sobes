@@ -7,7 +7,6 @@ from django.urls import reverse
 
 class Category(models.Model):
     """Категория опросов"""
-
     class Meta:
         verbose_name = 'Опрос'
         verbose_name_plural = 'Опросы'

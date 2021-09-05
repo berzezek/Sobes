@@ -132,16 +132,6 @@ class AnswerForm(forms.ModelForm):
             'answer_multi'
         ]
 
-    # question = forms.ModelChoiceField(
-    #     queryset=Question.objects.all(),
-    #     # queryset=None,
-    #     label='Вопрос',
-    #     required=True,
-    #     widget=forms.Select(
-    #         attrs={'class': 'form-control mb-3'}
-    #     )
-    # )
-
     answer_text = forms.CharField(
         label='Ответ текстом',
         required=False,

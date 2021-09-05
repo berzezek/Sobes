@@ -108,12 +108,9 @@ class AnswerNumberCreate(generics.ListCreateAPIView):
 
 
 class AnswerCreate(generics.ListCreateAPIView):
-
+    queryset = Answer.objects.all()
     serializer_class = AnswerModelSerializer
     lookup_url_kwarg = 'an_pk'
-
-    def get_queryset(self):
-        return Answer.objects.filter(pk=self.kwargs['q_pk']).first()
 
     def perform_create(self, serializer):
         serializer.save(

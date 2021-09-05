@@ -1,19 +1,15 @@
-from rest_framework import serializers, status
-from rest_framework.fields import empty, UUIDField
-from rest_framework.response import Response
+from rest_framework import serializers
 
 from ..models import Category, Question, Choice, Answer, AnswerNumber
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Category
         exclude = ('owner',)
 
 
 class QuestionModelSerializer(serializers.ModelSerializer):
-
     type_display = serializers.CharField(source='get_type_display')
 
     class Meta:
@@ -27,7 +23,6 @@ class QuestionModelSerializer(serializers.ModelSerializer):
 
 
 class QuestionCreateModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Question
         fields = [
@@ -39,7 +34,6 @@ class QuestionCreateModelSerializer(serializers.ModelSerializer):
 
 
 class QuestionModelSerializer(serializers.ModelSerializer):
-
     type_display = serializers.CharField(source='get_type_display')
 
     class Meta:
@@ -52,10 +46,7 @@ class QuestionModelSerializer(serializers.ModelSerializer):
         ]
 
 
-
-
 class ChoiceModelSerializer(serializers.ModelSerializer):
-
     question = QuestionModelSerializer(read_only=True)
 
     class Meta:
@@ -64,15 +55,12 @@ class ChoiceModelSerializer(serializers.ModelSerializer):
 
 
 class AnswerNumberModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = AnswerNumber
         fields = []
 
 
 class AnswerModelSerializer(serializers.ModelSerializer):
-
-    answer_choice = serializers.PrimaryKeyRelatedField(queryset=Choice.objects.all())
 
     class Meta:
         model = Answer
@@ -82,15 +70,16 @@ class AnswerModelSerializer(serializers.ModelSerializer):
             'answer_multi'
         )
 
-    def create(self, validated_data):
-        question_id = validated_data.get('question', None)
-        if question_id is not None:
-            question = Question.objects.filter(id=question_id).first()
-            if question is not None:
-                answer_choice = question.answer
-                if answer_choice is not None:
-                   # update your answer
-                   return answer_choice
+    def __init__(self, *args, **kwargs):
+        # Don't pass the 'fields' arg up to the superclass
+        fields = kwargs.pop('fields', None)
 
-        answer_choice = Answer.objects.create(**validated_data)
-        return answer_choice
+        # Instantiate the superclass normally
+        super().__init__(*args, **kwargs)
+
+        if fields is not None:
+            # Drop any fields that are not specified in the `fields` argument.
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
