@@ -348,3 +348,4 @@ class AnswerCreateView(CreateView):
         kwargs = super().get_form_kwargs()
         kwargs['choice'] = Choice.objects.filter(question__id=self.kwargs['q_pk'])
         return kwargs
+
