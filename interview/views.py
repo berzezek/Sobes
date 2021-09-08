@@ -3,6 +3,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
@@ -349,3 +350,6 @@ class AnswerCreateView(CreateView):
         kwargs['choice'] = Choice.objects.filter(question__id=self.kwargs['q_pk'])
         return kwargs
 
+
+def index(request):
+    return render(request, 'interview/index.html')

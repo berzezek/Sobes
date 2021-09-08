@@ -1,6 +1,7 @@
-from rest_framework import generics, status
+from rest_framework import generics
 from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAdminUser
+
 from .permissions import IsStartDateBegin
 from .serializers import (
     CategoryModelSerializer,
@@ -10,6 +11,7 @@ from .serializers import (
     ChoiceCreateSerializer,
     AnswerNumberModelSerializer,
     AnswerModelSerializer,
+    # ForChoice,
 )
 from ..models import (
     Category,
@@ -113,7 +115,6 @@ class ChoiceDestroy(generics.ListAPIView, generics.DestroyAPIView):
 
 
 class AnswerNumberCreate(generics.ListCreateAPIView):
-
     queryset = AnswerNumber.objects.all()
     serializer_class = AnswerNumberModelSerializer
 
@@ -121,8 +122,7 @@ class AnswerNumberCreate(generics.ListCreateAPIView):
         serializer.save(number=AnswerNumber.objects.latest('pk').pk + 1)
 
 
-class AnswerCreate(generics.CreateAPIView):
-    # queryset = Answer.objects.all()
+class AnswerCreate(generics.ListCreateAPIView):
     serializer_class = AnswerModelSerializer
 
     def perform_create(self, serializer):
@@ -132,14 +132,16 @@ class AnswerCreate(generics.CreateAPIView):
             question=Question.objects.get(pk=self.kwargs['q_pk']),
         )
 
+    def get_queryset(self):
+        return Answer.objects.filter(pk=self.kwargs['an_pk'])
+
 
 class AnswerSearch(generics.ListAPIView):
     serializer_class = AnswerModelSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['id',]
+    search_fields = ['id', ]
 
     def get_queryset(self):
         query = self.request.GET.get('search')
         object_list = Answer.objects.filter(pk=query)
         return object_list
-
