@@ -102,9 +102,6 @@ class AnswerModelSerializer(ModelSerializer):
     question = serializers.SerializerMethodField()
     category = serializers.SerializerMethodField()
 
-    # answer_choice = ChoiceModelSerializer
-    # answer_multi = ChoiceModelSerializer
-
     def get_question(self, obj):
         return obj.question.title
 
@@ -112,14 +109,14 @@ class AnswerModelSerializer(ModelSerializer):
         return obj.category.title
 
     # answer_choice = serializers.PrimaryKeyRelatedField(
-    #     # queryset=Choice.objects.filter(question__id=4)
+    #     # queryset=Choice.objects.filter(question__id=?)
     # )
     #
     # # answer_choice = ForChoice()
     #
     # answer_multi = serializers.PrimaryKeyRelatedField(
     #     many=True,
-    #     # queryset=Choice.objects.filter(question__id=4)
+    #     # queryset=Choice.objects.filter(question__id=?)
     # )
 
     class Meta:
@@ -133,7 +130,7 @@ class AnswerModelSerializer(ModelSerializer):
             'answer_multi',
         )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['answer_choice'].queryset = Choice.objects.filter(question__id=4)
-        self.fields['answer_multi'].queryset = Choice.objects.filter(question__id=4)
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['answer_choice'].queryset = Choice.objects.filter(question__id=?)
+    #     self.fields['answer_multi'].queryset = Choice.objects.filter(question__id=?)

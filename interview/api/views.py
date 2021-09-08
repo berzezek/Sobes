@@ -119,7 +119,10 @@ class AnswerNumberCreate(generics.ListCreateAPIView):
     serializer_class = AnswerNumberModelSerializer
 
     def perform_create(self, serializer):
-        serializer.save(number=AnswerNumber.objects.latest('pk').pk + 1)
+        if AnswerNumber.objects.all():
+            serializer.save(number=AnswerNumber.objects.latest('pk').pk + 1)
+        else:
+            serializer.save(number=1)
 
 
 class AnswerCreate(generics.ListCreateAPIView):
@@ -131,9 +134,6 @@ class AnswerCreate(generics.ListCreateAPIView):
             answer_numbers=AnswerNumber.objects.get(pk=self.kwargs['an_pk']),
             question=Question.objects.get(pk=self.kwargs['q_pk']),
         )
-
-    def get_queryset(self):
-        return Answer.objects.filter(pk=self.kwargs['an_pk'])
 
 
 class AnswerSearch(generics.ListAPIView):
