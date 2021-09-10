@@ -125,7 +125,7 @@ class AnswerNumberCreate(generics.ListCreateAPIView):
             serializer.save(number=1)
 
 
-class AnswerCreate(generics.ListCreateAPIView):
+class AnswerCreate(generics.CreateAPIView):
     serializer_class = AnswerModelSerializer
 
     def perform_create(self, serializer):
